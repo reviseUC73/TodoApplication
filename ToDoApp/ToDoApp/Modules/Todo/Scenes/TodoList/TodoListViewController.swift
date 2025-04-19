@@ -15,13 +15,28 @@ protocol TodoListDisplayLogic: AnyObject {
 
 class TodoListViewController: UIViewController, TodoListDisplayLogic {
     
+    // MARK: - Section Model
+    enum Section {
+        case inProgress
+        case completed
+        
+        var title: String {
+            switch self {
+            case .inProgress:
+                return "In Progress"
+            case .completed:
+                return "Completed"
+            }
+        }
+    }
+    
     // MARK: - Clean Swift
     var interactor: TodoListBusinessLogic?
     var router: (NSObjectProtocol & TodoListRoutingLogic & TodoListDataPassing)?
     
     // MARK: - UI Components
     private lazy var tableView: UITableView = {
-        let tableView = UITableView()
+        let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = .systemBackground
@@ -82,6 +97,17 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
     
     // MARK: - Properties
     private var displayedTodos: [TodoList.FetchTodos.ViewModel.DisplayedTodo] = []
+    private var sections: [Section] = [.inProgress, .completed]
+    
+    // Grouped todos
+    private var inProgressTodos: [TodoList.FetchTodos.ViewModel.DisplayedTodo] {
+        return displayedTodos.filter { !$0.isCompleted }
+    }
+    
+    private var completedTodos: [TodoList.FetchTodos.ViewModel.DisplayedTodo] {
+        return displayedTodos.filter { $0.isCompleted }
+    }
+    
     
     // MARK: - Object lifecycle
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -172,29 +198,15 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
         interactor?.fetchTodos(request: request)
     }
     
-    // MARK: - Display Logic
-    func displayTodos(viewModel: TodoList.FetchTodos.ViewModel) {
-        displayedTodos = viewModel.displayedTodos
-        
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            
-            self.emptyStateView.isHidden = !self.displayedTodos.isEmpty
-            self.tableView.reloadData()
-        }
-    }
-    
-    func displayAddedTodo(viewModel: TodoList.AddTodo.ViewModel) {
-        showToast(message: viewModel.message)
-    }
-    
-    func displayToggledTodoStatus(viewModel: TodoList.ToggleTodoStatus.ViewModel) {
-        showToast(message: viewModel.message)
-    }
-    
-    func displayDeletedTodo(viewModel: TodoList.DeleteTodo.ViewModel) {
-        showToast(message: viewModel.message)
-    }
+    // Get todos for a specific section
+    private func todos(for section: Section) -> [TodoList.FetchTodos.ViewModel.DisplayedTodo] {
+         switch section {
+         case .inProgress:
+             return inProgressTodos
+         case .completed:
+             return completedTodos
+         }
+     }
     
     // MARK: - Helpers
     private func showToast(message: String) {
@@ -233,8 +245,76 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
     }
 }
 
+// MARK: - Display Logic
+extension TodoListViewController {
+    func displayTodos(viewModel: TodoList.FetchTodos.ViewModel) {
+        displayedTodos = viewModel.displayedTodos
+        
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            self.emptyStateView.isHidden = !self.displayedTodos.isEmpty
+            self.tableView.reloadData()
+        }
+    }
+    
+    func displayAddedTodo(viewModel: TodoList.AddTodo.ViewModel) {
+        showToast(message: viewModel.message)
+    }
+    
+    func displayToggledTodoStatus(viewModel: TodoList.ToggleTodoStatus.ViewModel) {
+        showToast(message: viewModel.message)
+    }
+    
+    func displayDeletedTodo(viewModel: TodoList.DeleteTodo.ViewModel) {
+        showToast(message: viewModel.message)
+    }
+}
+
 // MARK: - UITableViewDelegate
 extension TodoListViewController : UITableViewDelegate {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard !displayedTodos.isEmpty else { return nil }
+        
+        let currentSection = sections[section]
+        let sectionTodos = todos(for: currentSection)
+        
+        // Only show section header if there are todos in this section
+        if sectionTodos.isEmpty {
+            return nil
+        }
+        
+        let headerView = UIView()
+        headerView.backgroundColor = .systemBackground
+        
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        label.textColor = .label
+        label.text = currentSection.title
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        headerView.addSubview(label)
+        
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
+            label.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -16),
+            label.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 8),
+            label.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -8)
+        ])
+        
+        return headerView
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        guard !displayedTodos.isEmpty else { return 0 }
+        
+        let currentSection = sections[section]
+        let sectionTodos = todos(for: currentSection)
+        
+        // Return 0 height if section is empty
+        return sectionTodos.isEmpty ? 0 : 40
+    }
+    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [weak self] (_, _, completion) in
             guard let self = self else { return }
@@ -255,8 +335,17 @@ extension TodoListViewController : UITableViewDelegate {
 
 // MARK: - UITableViewDataSource
 extension TodoListViewController: UITableViewDataSource {
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return displayedTodos.count
+//    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return sections.count
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return displayedTodos.count
+        let currentSection = sections[section]
+        return todos(for: currentSection).count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -264,7 +353,10 @@ extension TodoListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        let todo = displayedTodos[indexPath.row]
+        let currentSection = sections[indexPath.section]
+        let sectionTodos = todos(for: currentSection)
+//        let todo = displayedTodos[indexPath.row]
+        let todo = sectionTodos[indexPath.row]
         
         // Configure cell with the todo data
         cell.configure(with: todo)
@@ -293,3 +385,4 @@ extension TodoListViewController: TodoTableViewCellDelegate {
         interactor?.toggleTodoStatus(request: request)
     }
 }
+
