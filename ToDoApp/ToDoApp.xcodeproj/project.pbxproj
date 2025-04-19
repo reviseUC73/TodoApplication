@@ -38,6 +38,12 @@
 		42AF37322DB30EE100527139 /* AddTodoInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37312DB30EE100527139 /* AddTodoInteractor.swift */; };
 		42AF37342DB30EEB00527139 /* AddTodoPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37332DB30EEB00527139 /* AddTodoPresenter.swift */; };
 		42AF37362DB30EF700527139 /* AddTodoRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37352DB30EF700527139 /* AddTodoRouter.swift */; };
+		42AF373E2DB3ED3000527139 /* TodoCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF373D2DB3ED3000527139 /* TodoCardView.swift */; };
+		42AF37402DB3ED6700527139 /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF373F2DB3ED6700527139 /* SectionHeaderView.swift */; };
+		42AF37422DB3ED9500527139 /* DateCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37412DB3ED9500527139 /* DateCarouselView.swift */; };
+		42AF37442DB3EDBA00527139 /* FilterOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37432DB3EDBA00527139 /* FilterOptionsView.swift */; };
+		42AF37462DB3EDD200527139 /* GradientBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37452DB3EDD200527139 /* GradientBackgroundView.swift */; };
+		42AF37482DB4113600527139 /* SwipeableTodoCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37472DB4113600527139 /* SwipeableTodoCardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +99,12 @@
 		42AF37312DB30EE100527139 /* AddTodoInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTodoInteractor.swift; sourceTree = "<group>"; };
 		42AF37332DB30EEB00527139 /* AddTodoPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTodoPresenter.swift; sourceTree = "<group>"; };
 		42AF37352DB30EF700527139 /* AddTodoRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTodoRouter.swift; sourceTree = "<group>"; };
+		42AF373D2DB3ED3000527139 /* TodoCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoCardView.swift; sourceTree = "<group>"; };
+		42AF373F2DB3ED6700527139 /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
+		42AF37412DB3ED9500527139 /* DateCarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCarouselView.swift; sourceTree = "<group>"; };
+		42AF37432DB3EDBA00527139 /* FilterOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterOptionsView.swift; sourceTree = "<group>"; };
+		42AF37452DB3EDD200527139 /* GradientBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientBackgroundView.swift; sourceTree = "<group>"; };
+		42AF37472DB4113600527139 /* SwipeableTodoCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeableTodoCardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -257,6 +269,12 @@
 			children = (
 				42885ED02DB2879F009EFAA4 /* TaskCard */,
 				42AF37192DB2D97800527139 /* TodoTableViewCell.swift */,
+				42AF373D2DB3ED3000527139 /* TodoCardView.swift */,
+				42AF37472DB4113600527139 /* SwipeableTodoCardView.swift */,
+				42AF373F2DB3ED6700527139 /* SectionHeaderView.swift */,
+				42AF37412DB3ED9500527139 /* DateCarouselView.swift */,
+				42AF37432DB3EDBA00527139 /* FilterOptionsView.swift */,
+				42AF37452DB3EDD200527139 /* GradientBackgroundView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -465,6 +483,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42AF37462DB3EDD200527139 /* GradientBackgroundView.swift in Sources */,
 				42AF37292DB2E81B00527139 /* LoginViewController.swift in Sources */,
 				42AF37122DB2D93000527139 /* TodoListWorker.swift in Sources */,
 				42AF370B2DB2D83600527139 /* TodoRequestTarget.swift in Sources */,
@@ -480,15 +499,20 @@
 				42AF37232DB2E80500527139 /* LoginInteractor.swift in Sources */,
 				42AF37342DB30EEB00527139 /* AddTodoPresenter.swift in Sources */,
 				42AF372E2DB30EC700527139 /* AddTodoModels.swift in Sources */,
+				42AF37402DB3ED6700527139 /* SectionHeaderView.swift in Sources */,
 				42885EB82DB27454009EFAA4 /* AppDelegate.swift in Sources */,
+				42AF37482DB4113600527139 /* SwipeableTodoCardView.swift in Sources */,
 				42AF37102DB2D8EC00527139 /* TodoListModels.swift in Sources */,
 				42885EB92DB27454009EFAA4 /* SceneDelegate.swift in Sources */,
 				42AF37302DB30ED400527139 /* AddTodoWorker.swift in Sources */,
+				42AF37442DB3EDBA00527139 /* FilterOptionsView.swift in Sources */,
 				42885EBA2DB27454009EFAA4 /* ViewController.swift in Sources */,
 				42AF37082DB2D48300527139 /* AppRouter.swift in Sources */,
+				42AF37422DB3ED9500527139 /* DateCarouselView.swift in Sources */,
 				42AF372C2DB304AF00527139 /* AddTodoViewController.swift in Sources */,
 				42AF37182DB2D95400527139 /* TodoListRouter.swift in Sources */,
 				42885EBB2DB27454009EFAA4 /* APIClient.swift in Sources */,
+				42AF373E2DB3ED3000527139 /* TodoCardView.swift in Sources */,
 				42AF37162DB2D94600527139 /* TodoListPresenter.swift in Sources */,
 				42AF37272DB2E81400527139 /* LoginRouter.swift in Sources */,
 				42885EC82DB2776F009EFAA4 /* TodoListViewController.swift in Sources */,
