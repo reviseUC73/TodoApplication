@@ -50,7 +50,7 @@ class AddTodoViewController: UIViewController, AddTodoDisplayLogic {
         return label
     }()
     
-    private let cancelButton: UIButton = {
+    private lazy var cancelButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Cancel", for: .normal)
         button.setTitleColor(.systemBlue, for: .normal)
@@ -181,7 +181,7 @@ class AddTodoViewController: UIViewController, AddTodoDisplayLogic {
         return textView
     }()
     
-    private let addButton: UIButton = {
+    private lazy var addButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = .systemBlue
         button.setImage(UIImage(systemName: "checkmark"), for: .normal)

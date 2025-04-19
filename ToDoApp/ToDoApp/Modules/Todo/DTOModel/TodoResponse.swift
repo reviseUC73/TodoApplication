@@ -7,8 +7,6 @@
 
 import Foundation
 
-import Foundation
-
 enum TodoCategory: String, Codable, CaseIterable {
     case work = "Work"
     case personal = "Personal"

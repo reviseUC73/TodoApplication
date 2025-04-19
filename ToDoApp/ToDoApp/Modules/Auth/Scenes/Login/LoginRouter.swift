@@ -9,6 +9,7 @@ import UIKit
 
 @objc protocol LoginRoutingLogic {
     func routeToTodoList()
+    func routeToRegister()
 }
 
 protocol LoginDataPassing {
@@ -24,5 +25,9 @@ class LoginRouter: NSObject, LoginRoutingLogic, LoginDataPassing {
     func routeToTodoList() {
         // Navigate to TodoList scene
         AppRouter.shared.navigateToTodoList()
+    }
+    
+    func routeToRegister(){
+        AppRouter.shared.navigateToRegister()
     }
 }

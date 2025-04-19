@@ -44,6 +44,15 @@
 		42AF37442DB3EDBA00527139 /* FilterOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37432DB3EDBA00527139 /* FilterOptionsView.swift */; };
 		42AF37462DB3EDD200527139 /* GradientBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37452DB3EDD200527139 /* GradientBackgroundView.swift */; };
 		42AF37482DB4113600527139 /* SwipeableTodoCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37472DB4113600527139 /* SwipeableTodoCardView.swift */; };
+		42AF374A2DB431DE00527139 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37492DB431DE00527139 /* RegisterViewController.swift */; };
+		42AF374C2DB431F900527139 /* RegisterModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF374B2DB431F900527139 /* RegisterModels.swift */; };
+		42AF374E2DB4321700527139 /* RegisterInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF374D2DB4321700527139 /* RegisterInteractor.swift */; };
+		42AF37502DB4322A00527139 /* RegisterWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF374F2DB4322A00527139 /* RegisterWorker.swift */; };
+		42AF37522DB4324A00527139 /* RegisterRouter.swift .swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37512DB4324A00527139 /* RegisterRouter.swift .swift */; };
+		42AF37542DB4344400527139 /* RegisterPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37532DB4344400527139 /* RegisterPresenter.swift */; };
+		42AF37582DB44D3500527139 /* AuthRequestTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37572DB44D3500527139 /* AuthRequestTarget.swift */; };
+		42AF375A2DB44D5E00527139 /* AuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37592DB44D5E00527139 /* AuthResponse.swift */; };
+		42AF375C2DB44D8900527139 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF375B2DB44D8900527139 /* TokenManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +114,15 @@
 		42AF37432DB3EDBA00527139 /* FilterOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterOptionsView.swift; sourceTree = "<group>"; };
 		42AF37452DB3EDD200527139 /* GradientBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientBackgroundView.swift; sourceTree = "<group>"; };
 		42AF37472DB4113600527139 /* SwipeableTodoCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeableTodoCardView.swift; sourceTree = "<group>"; };
+		42AF37492DB431DE00527139 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
+		42AF374B2DB431F900527139 /* RegisterModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterModels.swift; sourceTree = "<group>"; };
+		42AF374D2DB4321700527139 /* RegisterInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterInteractor.swift; sourceTree = "<group>"; };
+		42AF374F2DB4322A00527139 /* RegisterWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterWorker.swift; sourceTree = "<group>"; };
+		42AF37512DB4324A00527139 /* RegisterRouter.swift .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RegisterRouter.swift .swift"; sourceTree = "<group>"; };
+		42AF37532DB4344400527139 /* RegisterPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterPresenter.swift; sourceTree = "<group>"; };
+		42AF37572DB44D3500527139 /* AuthRequestTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRequestTarget.swift; sourceTree = "<group>"; };
+		42AF37592DB44D5E00527139 /* AuthResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResponse.swift; sourceTree = "<group>"; };
+		42AF375B2DB44D8900527139 /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -218,6 +236,7 @@
 		42885EC22DB2747D009EFAA4 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
+				42AF37552DB44D1000527139 /* DTOModel */,
 				42885EC52DB274C2009EFAA4 /* Scenes */,
 			);
 			path = Auth;
@@ -292,6 +311,7 @@
 			isa = PBXGroup;
 			children = (
 				42AF37072DB2D48300527139 /* AppRouter.swift */,
+				42AF375B2DB44D8900527139 /* TokenManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -321,6 +341,12 @@
 		42AF371D2DB2E7CC00527139 /* Register */ = {
 			isa = PBXGroup;
 			children = (
+				42AF37492DB431DE00527139 /* RegisterViewController.swift */,
+				42AF374B2DB431F900527139 /* RegisterModels.swift */,
+				42AF374D2DB4321700527139 /* RegisterInteractor.swift */,
+				42AF37532DB4344400527139 /* RegisterPresenter.swift */,
+				42AF374F2DB4322A00527139 /* RegisterWorker.swift */,
+				42AF37512DB4324A00527139 /* RegisterRouter.swift .swift */,
 			);
 			path = Register;
 			sourceTree = "<group>";
@@ -336,6 +362,15 @@
 				42AF37332DB30EEB00527139 /* AddTodoPresenter.swift */,
 			);
 			path = AddTodo;
+			sourceTree = "<group>";
+		};
+		42AF37552DB44D1000527139 /* DTOModel */ = {
+			isa = PBXGroup;
+			children = (
+				42AF37572DB44D3500527139 /* AuthRequestTarget.swift */,
+				42AF37592DB44D5E00527139 /* AuthResponse.swift */,
+			);
+			path = DTOModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -490,12 +525,15 @@
 				42AF370D2DB2D85C00527139 /* TodoResponse.swift in Sources */,
 				42AF37212DB2E7FD00527139 /* LoginWorker.swift in Sources */,
 				42AF37252DB2E80E00527139 /* LoginPresenter.swift in Sources */,
+				42AF37542DB4344400527139 /* RegisterPresenter.swift in Sources */,
 				42AF371A2DB2D97800527139 /* TodoTableViewCell.swift in Sources */,
 				42885ECF2DB28794009EFAA4 /* TaskCard.swift in Sources */,
 				42AF371F2DB2E7F200527139 /* LoginModel.swift in Sources */,
 				42AF37362DB30EF700527139 /* AddTodoRouter.swift in Sources */,
 				42AF37142DB2D93A00527139 /* TodoListInteractor.swift in Sources */,
+				42AF375C2DB44D8900527139 /* TokenManager.swift in Sources */,
 				42AF37322DB30EE100527139 /* AddTodoInteractor.swift in Sources */,
+				42AF374A2DB431DE00527139 /* RegisterViewController.swift in Sources */,
 				42AF37232DB2E80500527139 /* LoginInteractor.swift in Sources */,
 				42AF37342DB30EEB00527139 /* AddTodoPresenter.swift in Sources */,
 				42AF372E2DB30EC700527139 /* AddTodoModels.swift in Sources */,
@@ -507,15 +545,21 @@
 				42AF37302DB30ED400527139 /* AddTodoWorker.swift in Sources */,
 				42AF37442DB3EDBA00527139 /* FilterOptionsView.swift in Sources */,
 				42885EBA2DB27454009EFAA4 /* ViewController.swift in Sources */,
+				42AF37522DB4324A00527139 /* RegisterRouter.swift .swift in Sources */,
 				42AF37082DB2D48300527139 /* AppRouter.swift in Sources */,
 				42AF37422DB3ED9500527139 /* DateCarouselView.swift in Sources */,
+				42AF374E2DB4321700527139 /* RegisterInteractor.swift in Sources */,
 				42AF372C2DB304AF00527139 /* AddTodoViewController.swift in Sources */,
 				42AF37182DB2D95400527139 /* TodoListRouter.swift in Sources */,
 				42885EBB2DB27454009EFAA4 /* APIClient.swift in Sources */,
 				42AF373E2DB3ED3000527139 /* TodoCardView.swift in Sources */,
+				42AF374C2DB431F900527139 /* RegisterModels.swift in Sources */,
 				42AF37162DB2D94600527139 /* TodoListPresenter.swift in Sources */,
+				42AF37582DB44D3500527139 /* AuthRequestTarget.swift in Sources */,
+				42AF375A2DB44D5E00527139 /* AuthResponse.swift in Sources */,
 				42AF37272DB2E81400527139 /* LoginRouter.swift in Sources */,
 				42885EC82DB2776F009EFAA4 /* TodoListViewController.swift in Sources */,
+				42AF37502DB4322A00527139 /* RegisterWorker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

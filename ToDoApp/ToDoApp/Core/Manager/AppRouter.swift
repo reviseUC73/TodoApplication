@@ -49,4 +49,11 @@ class AppRouter: AppRouterProtocol {
         self.navigationController = nav
         window?.rootViewController = nav
     }
+    
+    func navigateToRegister() {
+        let registerVC = RegisterViewController()
+        let nav = UINavigationController(rootViewController: registerVC)
+        self.navigationController = nav
+        window?.rootViewController = nav
+    }
 }

@@ -227,11 +227,11 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
         contentScrollView.addSubview(contentStackView)
         
         // Increase overall content padding
-        contentStackView.layoutMargins = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
+        contentStackView.layoutMargins = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         contentStackView.isLayoutMarginsRelativeArrangement = true
         
         // Increase spacing between stack view items
-        contentStackView.spacing = 18
+        contentStackView.spacing = 20
         
         // Add UI components to stack view
         contentStackView.addArrangedSubview(dateCarouselView)

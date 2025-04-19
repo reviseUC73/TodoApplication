@@ -100,8 +100,8 @@ class SwipeableTodoCardView: UIView {
         NSLayoutConstraint.activate([
             // Container constraints
             containerView.topAnchor.constraint(equalTo: topAnchor),
-            containerView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            containerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
             containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
             // TodoCardView constraints (fill container)
