@@ -11,13 +11,13 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
     
     // MARK: - Section Model
     enum Section {
-        case inProgress
+        case todo
         case completed
         
         var title: String {
             switch self {
-            case .inProgress:
-                return "In Progress"
+            case .todo:
+                return "To Do"
             case .completed:
                 return "Completed"
             }
@@ -60,24 +60,24 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
         return view
     }()
     
-    private lazy var inProgressSectionView: SectionHeaderView = {
+    private lazy var todoSectionView: SectionHeaderView = {
         let view = SectionHeaderView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
+    }()
+
+    private lazy var todoStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
     
     private lazy var completedSectionView: SectionHeaderView = {
         let view = SectionHeaderView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
-    }()
-    
-    private lazy var inProgressStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 12
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
     }()
     
     private lazy var completedStackView: UIStackView = {
@@ -148,7 +148,7 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
     
     // MARK: - Properties
     private var displayedTodos: [TodoList.FetchTodos.ViewModel.DisplayedTodo] = []
-    private var sections: [Section] = [.inProgress, .completed]
+    private var sections: [Section] = [.todo, .completed]
     private var selectedDate: Date = Date()
     private var selectedFilter: FilterOptionsView.FilterOption = .all
     
@@ -159,8 +159,6 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
             case .all:
                 return true
             case .todo:
-                return !todo.isCompleted && todo.title.lowercased().contains("todo")
-            case .inProgress:
                 return !todo.isCompleted
             case .completed:
                 return todo.isCompleted
@@ -169,7 +167,7 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
     }
     
     // Grouped todos
-    private var inProgressTodos: [TodoList.FetchTodos.ViewModel.DisplayedTodo] {
+    private var todoItems: [TodoList.FetchTodos.ViewModel.DisplayedTodo] {
         return filteredTodos.filter { !$0.isCompleted }
     }
     
@@ -220,7 +218,6 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
         // Setup background
         backgroundView.frame = view.bounds
         backgroundView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        //        backgroundView.setSunsetGradient()
         view.addSubview(backgroundView)
         
         setupNavigationBar()
@@ -229,13 +226,24 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
         view.addSubview(contentScrollView)
         contentScrollView.addSubview(contentStackView)
         
+        // Increase overall content padding
+        contentStackView.layoutMargins = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
+        contentStackView.isLayoutMarginsRelativeArrangement = true
+        
+        // Increase spacing between stack view items
+        contentStackView.spacing = 18
+        
         // Add UI components to stack view
         contentStackView.addArrangedSubview(dateCarouselView)
         contentStackView.addArrangedSubview(filterOptionsView)
-        contentStackView.addArrangedSubview(inProgressSectionView)
-        contentStackView.addArrangedSubview(inProgressStackView)
+        contentStackView.addArrangedSubview(todoSectionView)
+        contentStackView.addArrangedSubview(todoStackView)
         contentStackView.addArrangedSubview(completedSectionView)
         contentStackView.addArrangedSubview(completedStackView)
+        
+        // Add padding between section header and content
+        todoStackView.spacing = 16
+        completedStackView.spacing = 16
         
         // Add empty state and add button on top
         view.addSubview(emptyStateView)
@@ -269,9 +277,10 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
         ])
         
         // Configure section headers
-        inProgressSectionView.configure(for: .inProgress, itemCount: 0)
+        todoSectionView.configure(for: .todo, itemCount: 0)
         completedSectionView.configure(for: .completed, itemCount: 0)
     }
+
     
     private func setupNavigationBar() {
         // Make navigation bar transparent so your gradient shows through
@@ -290,8 +299,8 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
         // Create a centered label for the title
         let titleLabel = UILabel()
         titleLabel.text = "Todo List"
-        titleLabel.textColor = .darkGray
-        titleLabel.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+        titleLabel.textColor = .black
+        titleLabel.font = UIFont.systemFont(ofSize: 36, weight: .bold)
         titleLabel.textAlignment = .center
         
         navigationItem.titleView = titleLabel
@@ -325,27 +334,27 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
     // MARK: - UI Updates
     private func updateUI() {
         // Clear current todo views
-        inProgressStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        todoStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         completedStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
         // Update section headers
-        inProgressSectionView.configure(for: .inProgress, itemCount: inProgressTodos.count)
+        todoSectionView.configure(for: .todo, itemCount: todoItems.count)
         completedSectionView.configure(for: .completed, itemCount: completedTodos.count)
         
         // Show/hide empty state
         emptyStateView.isHidden = !filteredTodos.isEmpty
         
         // If there are no todos in a section, hide the section
-        inProgressSectionView.isHidden = inProgressTodos.isEmpty
-        inProgressStackView.isHidden = inProgressTodos.isEmpty
+        todoSectionView.isHidden = todoItems.isEmpty
+        todoStackView.isHidden = todoItems.isEmpty
         completedSectionView.isHidden = completedTodos.isEmpty
         completedStackView.isHidden = completedTodos.isEmpty
         
-        // Add swipeable todo cards for in-progress todos
-        for todo in inProgressTodos {
+        // Add swipeable todo cards for todo items
+        for todo in todoItems {
             let swipeableTodoCard = SwipeableTodoCardView()
             swipeableTodoCard.configure(with: todo, delegate: self)
-            inProgressStackView.addArrangedSubview(swipeableTodoCard)
+            todoStackView.addArrangedSubview(swipeableTodoCard)
             
             // Set height constraint for the card
             swipeableTodoCard.heightAnchor.constraint(equalToConstant: 110).isActive = true

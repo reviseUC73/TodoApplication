@@ -14,7 +14,7 @@ protocol DateCarouselViewDelegate: AnyObject {
 class DateCarouselView: UIView {
     
     // MARK: - Constants
-    private let numberOfDays = 15
+    private let numberOfDays = 10
     private let dayWidth: CGFloat = 70
     private let dayHeight: CGFloat = 80
     

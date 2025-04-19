@@ -8,51 +8,51 @@
 import UIKit
 
 protocol FilterOptionsViewDelegate: AnyObject {
-    func filterOptionsView(_ filterOptionsView: FilterOptionsView, didSelectFilter filter: FilterOptionsView.FilterOption)
+    func filterOptionsView(_ filterOptionsView: FilterOptionsView,
+                           didSelectFilter filter: FilterOptionsView.FilterOption)
 }
 
 class FilterOptionsView: UIView {
     
     enum FilterOption: String, CaseIterable {
-        case all = "All"
-        case todo = "To do"
-        case inProgress = "In Progress"
+        case all       = "All"
+        case todo      = "To do"
         case completed = "Completed"
         
         var systemImageName: String {
             switch self {
-            case .all: return "1list.bullet"
-            case .todo: return "1circle"
-            case .inProgress: return "1arrow.triangle.2.circlepath"
-            case .completed: return "1checkmark.circle"
+            case .all:       return "1list.bullet"
+            case .todo:      return "2circle"
+            case .completed: return "3checkmark.circle"
             }
         }
     }
     
     // MARK: - UI Components
+    
     private lazy var filterScrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        return scrollView
+        let sv = UIScrollView()
+        sv.showsHorizontalScrollIndicator = false
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        return sv
     }()
     
     private let containerStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 10
-        stackView.distribution = .fillProportionally
-        stackView.alignment = .center
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
+        let sv = UIStackView()
+        sv.axis = .horizontal
+        sv.spacing = 24
+        sv.alignment = .center
+        sv.distribution = .equalSpacing
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        return sv
     }()
     
     // MARK: - Properties
+    
     private var filterButtons: [UIButton] = []
-    private var selectedFilter: FilterOption = .all
     weak var delegate: FilterOptionsViewDelegate?
     
-    // MARK: - Initialization
+    // MARK: - Init
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -66,7 +66,7 @@ class FilterOptionsView: UIView {
         setupFilterButtons()
     }
     
-    // MARK: - Setup
+    // MARK: - Setup UI
     
     private func setupUI() {
         backgroundColor = .clear
@@ -74,98 +74,113 @@ class FilterOptionsView: UIView {
         addSubview(filterScrollView)
         filterScrollView.addSubview(containerStackView)
         
+        let contentGuide = filterScrollView.contentLayoutGuide
+        let frameGuide   = filterScrollView.frameLayoutGuide
+        
         NSLayoutConstraint.activate([
+            // Scroll view fills self
             filterScrollView.topAnchor.constraint(equalTo: topAnchor),
+            filterScrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
             filterScrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
             filterScrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            filterScrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
-            containerStackView.topAnchor.constraint(equalTo: filterScrollView.topAnchor),
-            containerStackView.leadingAnchor.constraint(equalTo: filterScrollView.leadingAnchor, constant: 16),
-            containerStackView.trailingAnchor.constraint(equalTo: filterScrollView.trailingAnchor, constant: -16),
-            containerStackView.bottomAnchor.constraint(equalTo: filterScrollView.bottomAnchor),
-            containerStackView.heightAnchor.constraint(equalTo: filterScrollView.heightAnchor)
+            // StackView inside scrollView
+            containerStackView.topAnchor.constraint(equalTo: contentGuide.topAnchor),
+            containerStackView.bottomAnchor.constraint(equalTo: contentGuide.bottomAnchor),
+            containerStackView.leadingAnchor.constraint(greaterThanOrEqualTo: contentGuide.leadingAnchor, constant: 16),
+            containerStackView.trailingAnchor.constraint(lessThanOrEqualTo: contentGuide.trailingAnchor, constant: -16),
+            
+            // Center horizontally in the visible area
+            containerStackView.centerXAnchor.constraint(equalTo: frameGuide.centerXAnchor),
+            
+            // Fix height
+            containerStackView.heightAnchor.constraint(equalTo: frameGuide.heightAnchor)
         ])
     }
     
+    // MARK: - Buttons
+    
     private func setupFilterButtons() {
-        // Create buttons for each filter option
-        for (index, option) in FilterOption.allCases.enumerated() {
-            let button = createFilterButton(for: option)
-            containerStackView.addArrangedSubview(button)
-            filterButtons.append(button)
+        for (idx, option) in FilterOption.allCases.enumerated() {
+            let btn = createFilterButton(for: option)
+            btn.tag = idx
+            btn.addTarget(self, action: #selector(filterButtonTapped(_:)), for: .touchUpInside)
+            containerStackView.addArrangedSubview(btn)
+            filterButtons.append(btn)
             
-            // Select first button by default
-            if index == 0 {
-                selectButton(button)
+            if idx == 0 {
+                selectButton(btn)
             }
         }
     }
     
     private func createFilterButton(for option: FilterOption) -> UIButton {
-        let button = UIButton(type: .system)
-        button.setTitle(option.rawValue, for: .normal)
+        let btn = UIButton(type: .system)
+        btn.setTitle(option.rawValue, for: .normal)
+        btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         
-        if let image = UIImage(systemName: option.systemImageName) {
-            button.setImage(image, for: .normal)
-            button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
-            button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0)
+        // Icon + text
+        if let img = UIImage(systemName: option.systemImageName) {
+            btn.setImage(img, for: .normal)
+            btn.imageEdgeInsets = .init(top: 0, left: 0, bottom: 0, right: 8)
+            btn.titleEdgeInsets = .init(top: 0, left: 8, bottom: 0, right: 0)
         }
         
-        button.tintColor = .systemGray
-        button.backgroundColor = .systemGray6
-        button.layer.cornerRadius = 8
-        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
-        button.tag = FilterOption.allCases.firstIndex(of: option) ?? 0
-        button.addTarget(self, action: #selector(filterButtonTapped(_:)), for: .touchUpInside)
+        // Style
+        btn.tintColor = .systemGray
+        btn.setTitleColor(.systemGray, for: .normal)
+        btn.backgroundColor = .white
+        btn.layer.cornerRadius = 12
         
-        return button
+        // เพิ่มขนาดปุ่ม (padding รอบตัวอักษร)
+        btn.contentEdgeInsets = .init(top: 8, left: 24, bottom: 8, right: 24)
+        
+        // เพิ่ม shadow เล็กน้อย
+        btn.layer.shadowColor = UIColor.black.cgColor
+        btn.layer.shadowOpacity = 0.1
+        btn.layer.shadowOffset = CGSize(width: 0, height: 2)
+        btn.layer.shadowRadius = 4
+        
+        return btn
     }
     
     // MARK: - Actions
     
     @objc private func filterButtonTapped(_ sender: UIButton) {
-        // Reset all buttons
-        for button in filterButtons {
-            unselectButton(button)
-        }
-        
-        // Select tapped button
+        filterButtons.forEach { unselectButton($0) }
         selectButton(sender)
         
-        // Get selected filter and notify delegate
-        let filterIndex = sender.tag
-        let selectedFilter = FilterOption.allCases[filterIndex]
-        self.selectedFilter = selectedFilter
-        delegate?.filterOptionsView(self, didSelectFilter: selectedFilter)
+        let selected = FilterOption.allCases[sender.tag]
+        delegate?.filterOptionsView(self, didSelectFilter: selected)
     }
     
-    // MARK: - Helper Methods
+    // MARK: - Helpers
     
-    private func selectButton(_ button: UIButton) {
-        button.backgroundColor = .systemIndigo
-        button.tintColor = .white
-        button.setTitleColor(.white, for: .normal)
+    private func selectButton(_ btn: UIButton) {
+        switch btn.tag {
+        case 1:
+            btn.backgroundColor = .systemBlue
+        case 2:
+            btn.backgroundColor = .systemGreen
+        default:
+            btn.backgroundColor = .systemIndigo
+        }
+        
+        btn.tintColor = .white
+        btn.setTitleColor(.white, for: .normal)
     }
     
-    private func unselectButton(_ button: UIButton) {
-        button.backgroundColor = .systemGray6
-        button.tintColor = .systemGray
-        button.setTitleColor(.systemGray, for: .normal)
+    private func unselectButton(_ btn: UIButton) {
+        btn.backgroundColor = .white
+        btn.tintColor = .systemGray
+        btn.setTitleColor(.systemGray, for: .normal)
     }
     
-    // MARK: - Public Methods
+    // MARK: - Public
     
     func setSelectedFilter(_ filter: FilterOption) {
-        selectedFilter = filter
-        
-        // Update button UI
-        for (index, button) in filterButtons.enumerated() {
-            if FilterOption.allCases[index] == filter {
-                selectButton(button)
-            } else {
-                unselectButton(button)
-            }
+        for (idx, btn) in filterButtons.enumerated() {
+            FilterOption.allCases[idx] == filter ? selectButton(btn) : unselectButton(btn)
         }
     }
 }

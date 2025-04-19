@@ -235,25 +235,25 @@ class TodoTableViewCell: UITableViewCell {
         // Set category color based on category type
         switch todo.category {
         case .work:
-            categoryLabel.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.2)
+            categoryLabel.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.1)
             categoryLabel.textColor = .systemBlue
         case .personal:
-            categoryLabel.backgroundColor = UIColor.systemPurple.withAlphaComponent(0.2)
+            categoryLabel.backgroundColor = UIColor.systemPurple.withAlphaComponent(0.1)
             categoryLabel.textColor = .systemPurple
         case .shopping:
-            categoryLabel.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.2)
+            categoryLabel.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.1)
             categoryLabel.textColor = .systemGreen
         case .health:
-            categoryLabel.backgroundColor = UIColor.systemRed.withAlphaComponent(0.2)
+            categoryLabel.backgroundColor = UIColor.systemRed.withAlphaComponent(0.1)
             categoryLabel.textColor = .systemRed
         case .education:
-            categoryLabel.backgroundColor = UIColor.systemOrange.withAlphaComponent(0.2)
+            categoryLabel.backgroundColor = UIColor.systemOrange.withAlphaComponent(0.1)
             categoryLabel.textColor = .systemOrange
         case .finance:
-            categoryLabel.backgroundColor = UIColor.systemTeal.withAlphaComponent(0.2)
+            categoryLabel.backgroundColor = UIColor.systemTeal.withAlphaComponent(0.1)
             categoryLabel.textColor = .systemTeal
         case .other:
-            categoryLabel.backgroundColor = UIColor.systemGray.withAlphaComponent(0.2)
+            categoryLabel.backgroundColor = UIColor.systemGray.withAlphaComponent(0.1)
             categoryLabel.textColor = .systemGray
         }
         

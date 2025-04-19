@@ -64,10 +64,12 @@ class SectionHeaderView: UIView {
         containerView.addSubview(countLabel)
         
         NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: topAnchor),
+            // ให้ containerView เว้นบน–ล่าง 12pt
+            containerView.topAnchor.constraint(equalTo: topAnchor, constant: 12),
+            containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
             containerView.leadingAnchor.constraint(equalTo: leadingAnchor),
             containerView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
             
             colorIndicator.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
             colorIndicator.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
@@ -92,7 +94,7 @@ class SectionHeaderView: UIView {
         
         // Set color based on section type
         switch section {
-        case .inProgress:
+        case .todo:
             colorIndicator.backgroundColor = .systemBlue
         case .completed:
             colorIndicator.backgroundColor = .systemGreen

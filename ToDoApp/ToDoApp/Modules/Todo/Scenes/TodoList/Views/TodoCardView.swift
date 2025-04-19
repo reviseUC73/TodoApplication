@@ -153,7 +153,7 @@ class TodoCardView: UIView {
             
             titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 16),
             titleLabel.leadingAnchor.constraint(equalTo: statusIndicator.trailingAnchor, constant: 16),
-            titleLabel.trailingAnchor.constraint(equalTo: categoryContainer.leadingAnchor, constant: -8),
+//            titleLabel.trailingAnchor.constraint(equalTo: categoryContainer.leadingAnchor, constant: -8),
             
             descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
             descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
@@ -233,18 +233,18 @@ class TodoCardView: UIView {
             statusIndicator.backgroundColor = .systemGreen
             statusIcon.image = UIImage(systemName: "checkmark")
             
-            // Apply strikethrough to title if completed
-            let attributedString = NSAttributedString(
-                string: todo.title,
-                attributes: [NSAttributedString.Key.strikethroughStyle: NSUnderlineStyle.single.rawValue]
-            )
-            titleLabel.attributedText = attributedString
+//           // Apply strikethrough to title if completed
+//            let attributedString = NSAttributedString(
+//                string: todo.title,
+//                attributes: [NSAttributedString.Key.strikethroughStyle: NSUnderlineStyle.single.rawValue]
+//            )
+//            titleLabel.attributedText = attributedString
         } else {
             statusIndicator.backgroundColor = .systemBlue
             statusIcon.image = nil
             
             // Normal title for incomplete todos
-            titleLabel.attributedText = nil
+//            titleLabel.attributedText = nil
             titleLabel.text = todo.title
         }
         
