@@ -66,17 +66,298 @@ The application uses **MongoDB Atlas** as its database with the following collec
 ## API Endpoints
 
 ### Authentication
-- `POST /auth/register` - Create a new user account
-- `POST /auth/login` - Authenticate a user and get access token
-- `POST /auth/refresh` - Refresh access token using a refresh token
-- `DELETE /auth/logout` - Invalidate the current token
+
+#### Register User
+- **Endpoint**: `POST /auth/register`
+- **Description**: Create a new user account
+- **Request Body**:
+  ```json
+  {
+    "username": "johndoe",
+    "email": "john@example.com",
+    "password": "securepassword123"
+  }
+  ```
+- **Response (200 OK)**:
+  ```json
+  {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "expires_in": 3600,
+    "user": {
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "username": "johndoe",
+      "email": "john@example.com",
+      "created_at": "2023-04-19T08:30:00Z"
+    }
+  }
+  ```
+- **Error Response (400 Bad Request)**:
+  ```json
+  {
+    "status": 400,
+    "message": "Validation failed",
+    "errors": {
+      "email": ["The email must be a valid email address."],
+      "password": ["The password must be at least 6 characters."]
+    }
+  }
+  ```
+
+#### Login
+- **Endpoint**: `POST /auth/login`
+- **Description**: Authenticate a user and get access token
+- **Request Body**:
+  ```json
+  {
+    "username": "johndoe",
+    "password": "securepassword123"
+  }
+  ```
+- **Response (200 OK)**:
+  ```json
+  {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "expires_in": 3600,
+    "user": {
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "username": "johndoe",
+      "email": "john@example.com",
+      "created_at": "2023-04-19T08:30:00Z"
+    }
+  }
+  ```
+- **Error Response (401 Unauthorized)**:
+  ```json
+  {
+    "status": 401,
+    "message": "Invalid username or password",
+    "errors": null
+  }
+  ```
+
+#### Refresh Token
+- **Endpoint**: `POST /auth/refresh`
+- **Description**: Refresh access token using a refresh token
+- **Request Body**:
+  ```json
+  {
+    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+  ```
+- **Response (200 OK)**:
+  ```json
+  {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpX...",
+    "refresh_token": "eyJhbGciOiJIUzk3NiIsInR5cCI6IkpY...",
+    "expires_in": 3600,
+    "user": {
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "username": "johndoe",
+      "email": "john@example.com",
+      "created_at": "2023-04-19T08:30:00Z"
+    }
+  }
+  ```
+- **Error Response (401 Unauthorized)**:
+  ```json
+  {
+    "status": 401,
+    "message": "Invalid refresh token",
+    "errors": null
+  }
+  ```
+
+#### Logout
+- **Endpoint**: `DELETE /auth/logout`
+- **Description**: Invalidate the current token
+- **Headers**:
+  ```
+  Authorization: Bearer {access_token}
+  ```
+- **Response (200 OK)**:
+  ```json
+  {
+    "message": "Successfully logged out"
+  }
+  ```
 
 ### Todo Management
-- `GET /todos` - Retrieve all todos for the authenticated user
-- `POST /todos` - Create a new todo item
-- `GET /todos/:id` - Get a specific todo by ID
-- `PUT /todos/:id` - Update an existing todo
-- `DELETE /todos/:id` - Delete a todo
+
+#### Get All Todos
+- **Endpoint**: `GET /todos`
+- **Description**: Retrieve all todos for the authenticated user
+- **Headers**:
+  ```
+  Authorization: Bearer {access_token}
+  ```
+- **Query Parameters**:
+  - `category` (optional): Filter by category (e.g., "Work", "Personal")
+  - `completed` (optional): Filter by completion status (true/false)
+  - `due_date` (optional): Filter by due date (ISO 8601 format)
+- **Response (200 OK)**:
+  ```json
+  {
+    "data": [
+      {
+        "id": "123e4567-e89b-12d3-a456-426614174000",
+        "title": "Buy groceries",
+        "description": "Milk, eggs, bread",
+        "category": "Shopping",
+        "due_date": "2024-04-21T18:00:00Z",
+        "is_completed": false,
+        "created_at": "2024-04-19T10:30:00Z",
+        "updated_at": "2024-04-19T10:30:00Z"
+      },
+      {
+        "id": "223e4567-e89b-12d3-a456-426614174001",
+        "title": "Finish project",
+        "description": "Complete the todo app",
+        "category": "Work",
+        "due_date": "2024-04-23T18:00:00Z", 
+        "is_completed": true,
+        "created_at": "2024-04-19T09:15:00Z",
+        "updated_at": "2024-04-20T14:30:00Z"
+      }
+    ],
+    "meta": {
+      "total": 2
+    }
+  }
+  ```
+
+#### Create Todo
+- **Endpoint**: `POST /todos`
+- **Description**: Create a new todo item
+- **Headers**:
+  ```
+  Authorization: Bearer {access_token}
+  Content-Type: application/json
+  ```
+- **Request Body**:
+  ```json
+  {
+    "title": "Call mom",
+    "description": "Ask about weekend plans",
+    "category": "Personal",
+    "due_date": "2024-04-22T15:30:00Z"
+  }
+  ```
+- **Response (201 Created)**:
+  ```json
+  {
+    "id": "323e4567-e89b-12d3-a456-426614174002",
+    "title": "Call mom",
+    "description": "Ask about weekend plans",
+    "category": "Personal",
+    "due_date": "2024-04-22T15:30:00Z",
+    "is_completed": false,
+    "created_at": "2024-04-20T08:45:00Z",
+    "updated_at": "2024-04-20T08:45:00Z"
+  }
+  ```
+- **Error Response (400 Bad Request)**:
+  ```json
+  {
+    "status": 400,
+    "message": "Validation failed",
+    "errors": {
+      "title": ["Title is required"]
+    }
+  }
+  ```
+
+#### Get Specific Todo
+- **Endpoint**: `GET /todos/:id`
+- **Description**: Get a specific todo by ID
+- **Headers**:
+  ```
+  Authorization: Bearer {access_token}
+  ```
+- **Response (200 OK)**:
+  ```json
+  {
+    "id": "323e4567-e89b-12d3-a456-426614174002",
+    "title": "Call mom",
+    "description": "Ask about weekend plans",
+    "category": "Personal",
+    "due_date": "2024-04-22T15:30:00Z",
+    "is_completed": false,
+    "created_at": "2024-04-20T08:45:00Z",
+    "updated_at": "2024-04-20T08:45:00Z"
+  }
+  ```
+- **Error Response (404 Not Found)**:
+  ```json
+  {
+    "status": 404,
+    "message": "Todo not found",
+    "errors": null
+  }
+  ```
+
+#### Update Todo
+- **Endpoint**: `PUT /todos/:id`
+- **Description**: Update an existing todo
+- **Headers**:
+  ```
+  Authorization: Bearer {access_token}
+  Content-Type: application/json
+  ```
+- **Request Body**:
+  ```json
+  {
+    "title": "Call mom",
+    "description": "Ask about weekend plans and dinner",
+    "category": "Personal",
+    "due_date": "2024-04-22T16:30:00Z",
+    "is_completed": true
+  }
+  ```
+- **Response (200 OK)**:
+  ```json
+  {
+    "id": "323e4567-e89b-12d3-a456-426614174002",
+    "title": "Call mom",
+    "description": "Ask about weekend plans and dinner",
+    "category": "Personal",
+    "due_date": "2024-04-22T16:30:00Z",
+    "is_completed": true,
+    "created_at": "2024-04-20T08:45:00Z",
+    "updated_at": "2024-04-20T09:15:00Z"
+  }
+  ```
+- **Error Response (404 Not Found)**:
+  ```json
+  {
+    "status": 404,
+    "message": "Todo not found",
+    "errors": null
+  }
+  ```
+
+#### Delete Todo
+- **Endpoint**: `DELETE /todos/:id`
+- **Description**: Delete a todo item
+- **Headers**:
+  ```
+  Authorization: Bearer {access_token}
+  ```
+- **Response (200 OK)**:
+  ```json
+  {
+    "message": "Todo deleted successfully"
+  }
+  ```
+- **Error Response (404 Not Found)**:
+  ```json
+  {
+    "status": 404,
+    "message": "Todo not found",
+    "errors": null
+  }
+  ```
 
 ## Technology Stack
 
