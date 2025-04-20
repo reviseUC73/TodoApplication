@@ -3,6 +3,7 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const config = require('./config/config');
 const errorHandler = require('./middlewares/error');
+const logger = require('./middlewares/logger');
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
@@ -17,6 +18,7 @@ connectDB();
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(logger);
 
 // Routes
 app.use('/auth', authRoutes);
@@ -42,4 +44,5 @@ app.use('*', (req, res) => {
 const PORT = config.PORT;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    console.log(`Logging enabled - check logs directory for details`);
 });

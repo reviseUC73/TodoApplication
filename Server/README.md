@@ -35,7 +35,7 @@ The project follows a **Layered Architecture** pattern with the following layers
 - **Responsibility**: Defines data schemas and handles database operations
 
 ### 5. Cross-Cutting Concerns
-- **Middlewares**: `/middlewares` directory - Authentication, validation, error handling
+- **Middlewares**: `/middlewares` directory - Authentication, validation, error handling, logging
 - **Utils**: `/utils` directory - Helper functions, error handlers, JWT utilities
 - **Config**: `/config` directory - Application and database configuration
 
@@ -367,6 +367,29 @@ The application uses **MongoDB Atlas** as its database with the following collec
 - **Authentication**: JWT (JSON Web Tokens)
 - **Validation**: Custom middleware
 - **Error Handling**: Custom error middleware
+
+## Logging System
+
+The application includes a comprehensive logging system that tracks all API requests and responses.
+
+### Features
+- Records HTTP method, URL, status code, response time, and IP address
+- Logs are written to both console and file
+- Log files are stored in the `/logs` directory
+- Timestamps are included in ISO format
+
+### Log Format
+```
+[TIMESTAMP] METHOD URL STATUS - RESPONSE_TIME - IP_ADDRESS
+```
+
+Example:
+```
+[2024-04-21T15:32:45.123Z] GET /todos 200 - 45ms - 127.0.0.1
+```
+
+### Configuration
+The logging middleware is located in `/middlewares/logger.js` and is automatically applied to all API requests.
 
 ## Setup and Configuration
 
