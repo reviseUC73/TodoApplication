@@ -8,13 +8,13 @@
 import Foundation
 
 enum TodoEndpoint: Endpoint {
-    case getTodos
+    case getTodos(category: String? = nil, completed: Bool? = nil, dueDate: Date? = nil)
     case createTodo(title: String, description: String, category: String, dueDate: Date?)
     case updateTodo(id: String, title: String, description: String, category: String, dueDate: Date?, isCompleted: Bool)
     case deleteTodo(id: String)
     
     var baseURL: URL {
-        return URL(string: "https://api.yourtodoapp.com")!
+        return URL(string: "http://localhost:5001")!
     }
     
     var path: String {
@@ -44,21 +44,45 @@ enum TodoEndpoint: Endpoint {
     }
     
     var headers: [String: String]? {
-        // Add any authentication headers here if needed
-        return ["Content-Type": "application/json"]
+        var headers = ["Content-Type": "application/json"]
+        
+        // Add token for authentication
+        if let token = TokenManager.shared.accessToken {
+            headers["Authorization"] = "Bearer \(token)"
+        }
+        
+        return headers
+    }
+    
+    var requiresAuthentication: Bool {
+        return true
     }
     
     var parameters: [String: Any]? {
         switch self {
-        case .getTodos, .deleteTodo:
-            return nil
+        case .getTodos(let category, let completed, let dueDate):
+            var params: [String: Any] = [:]
+            
+            if let category = category {
+                params["category"] = category
+            }
+            
+            if let completed = completed {
+                params["completed"] = completed
+            }
+            
+            if let dueDate = dueDate {
+                let dateFormatter = ISO8601DateFormatter()
+                params["due_date"] = dateFormatter.string(from: dueDate)
+            }
+            
+            return params.isEmpty ? nil : params
             
         case .createTodo(let title, let description, let category, let dueDate):
             var params: [String: Any] = [
                 "title": title,
                 "description": description,
-                "category": category,
-                "isCompleted": false
+                "category": category
             ]
             
             if let dueDate = dueDate {
@@ -82,6 +106,9 @@ enum TodoEndpoint: Endpoint {
             }
             
             return params
+            
+        case .deleteTodo:
+            return nil
         }
     }
 }

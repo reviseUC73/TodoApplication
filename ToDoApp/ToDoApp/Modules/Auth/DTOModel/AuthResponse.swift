@@ -55,10 +55,3 @@ struct AuthTokenResponse: Codable {
         case user
     }
 }
-
-// Error Response
-struct ErrorResponse: Codable {
-    let status: Int
-    let message: String
-    let errors: [String: [String]]?
-}

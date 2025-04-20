@@ -53,6 +53,8 @@
 		42AF37582DB44D3500527139 /* AuthRequestTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37572DB44D3500527139 /* AuthRequestTarget.swift */; };
 		42AF375A2DB44D5E00527139 /* AuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37592DB44D5E00527139 /* AuthResponse.swift */; };
 		42AF375C2DB44D8900527139 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF375B2DB44D8900527139 /* TokenManager.swift */; };
+		42AF37652DB58E5B00527139 /* MessageResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37642DB58E5B00527139 /* MessageResponse.swift */; };
+		42AF37672DB58F4200527139 /* ErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37662DB58F4200527139 /* ErrorResponse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -123,6 +125,8 @@
 		42AF37572DB44D3500527139 /* AuthRequestTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRequestTarget.swift; sourceTree = "<group>"; };
 		42AF37592DB44D5E00527139 /* AuthResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResponse.swift; sourceTree = "<group>"; };
 		42AF375B2DB44D8900527139 /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
+		42AF37642DB58E5B00527139 /* MessageResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageResponse.swift; sourceTree = "<group>"; };
+		42AF37662DB58F4200527139 /* ErrorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorResponse.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -204,6 +208,7 @@
 		42885EB02DB27454009EFAA4 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				42AF37632DB58E2D00527139 /* DTOModel */,
 				42AF37062DB2D46400527139 /* Manager */,
 				42885EAF2DB27454009EFAA4 /* Network */,
 			);
@@ -373,6 +378,15 @@
 			path = DTOModel;
 			sourceTree = "<group>";
 		};
+		42AF37632DB58E2D00527139 /* DTOModel */ = {
+			isa = PBXGroup;
+			children = (
+				42AF37642DB58E5B00527139 /* MessageResponse.swift */,
+				42AF37662DB58F4200527139 /* ErrorResponse.swift */,
+			);
+			path = DTOModel;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -537,10 +551,12 @@
 				42AF37232DB2E80500527139 /* LoginInteractor.swift in Sources */,
 				42AF37342DB30EEB00527139 /* AddTodoPresenter.swift in Sources */,
 				42AF372E2DB30EC700527139 /* AddTodoModels.swift in Sources */,
+				42AF37672DB58F4200527139 /* ErrorResponse.swift in Sources */,
 				42AF37402DB3ED6700527139 /* SectionHeaderView.swift in Sources */,
 				42885EB82DB27454009EFAA4 /* AppDelegate.swift in Sources */,
 				42AF37482DB4113600527139 /* SwipeableTodoCardView.swift in Sources */,
 				42AF37102DB2D8EC00527139 /* TodoListModels.swift in Sources */,
+				42AF37652DB58E5B00527139 /* MessageResponse.swift in Sources */,
 				42885EB92DB27454009EFAA4 /* SceneDelegate.swift in Sources */,
 				42AF37302DB30ED400527139 /* AddTodoWorker.swift in Sources */,
 				42AF37442DB3EDBA00527139 /* FilterOptionsView.swift in Sources */,

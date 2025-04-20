@@ -14,7 +14,7 @@ enum AuthEndpoint: Endpoint {
     case logout
     
     var baseURL: URL {
-        return URL(string: "https://api.yourtodoapp.com")!
+        return URL(string: "http://localhost:5001")!
     }
     
     var path: String {
@@ -43,7 +43,7 @@ enum AuthEndpoint: Endpoint {
         var headers = ["Content-Type": "application/json"]
         
         // Add Authorization header for endpoints that require authentication
-        if case .logout = self {
+        if requiresAuthentication {
             if let token = TokenManager.shared.accessToken {
                 headers["Authorization"] = "Bearer \(token)"
             }
@@ -76,5 +76,13 @@ enum AuthEndpoint: Endpoint {
             return nil
         }
     }
+    
+    var requiresAuthentication: Bool {
+        switch self {
+        case .login, .register, .refreshToken:
+            return false
+        case .logout:
+            return true
+        }
+    }
 }
-

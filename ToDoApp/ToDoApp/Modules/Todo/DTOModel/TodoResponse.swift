@@ -61,7 +61,17 @@ struct TodoResponse: Codable {
     }
 }
 
-// For local usage and testing when API is not available
+// For response when fetching all todos
+struct TodoListResponse: Codable {
+    let data: [TodoResponse]
+    let meta: Meta
+    
+    struct Meta: Codable {
+        let total: Int
+    }
+}
+
+// Todo model for use in the app
 struct Todo {
     let id: String
     var title: String

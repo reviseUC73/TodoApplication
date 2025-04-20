@@ -22,7 +22,10 @@ class AddTodoRouter: NSObject, AddTodoRoutingLogic, AddTodoDataPassing {
     // MARK: - Routing
     
     func routeToTodoList() {
-        // Simply dismiss this view controller to go back to the TodoList
-        viewController?.dismiss(animated: true)
+        // Make sure UI operations are performed on the main thread
+        DispatchQueue.main.async { [weak self] in
+            // Simply dismiss this view controller to go back to the TodoList
+            self?.viewController?.dismiss(animated: true)
+        }
     }
 }

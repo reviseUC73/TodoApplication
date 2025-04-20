@@ -20,18 +20,27 @@ class AddTodoWorker: AddTodoWorkerProtocol {
     }
     
     func createTodo(title: String, description: String, category: TodoCategory, dueDate: Date?, completion: @escaping (Result<Bool, Error>) -> Void) {
-        // In a real app, you would make an API call here
-        // For now, we'll just simulate a successful creation
+        let endpoint = TodoEndpoint.createTodo(
+            title: title,
+            description: description,
+            category: category.rawValue,
+            dueDate: dueDate
+        )
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            completion(.success(true))
+        apiClient.request(endpoint: endpoint) { (result: Result<TodoResponse, APIError>) in
+            switch result {
+            case .success(_):
+                // Successfully created the todo
+                completion(.success(true))
+                
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
     
     func fetchCategories(completion: @escaping ([TodoCategory]) -> Void) {
-        // In a real app, you might fetch categories from an API
-        // For now, we'll just return all available categories
-        
+        // Categories are defined in the app (TodoCategory enum), no need for API call
         DispatchQueue.main.async {
             completion(TodoCategory.allCases)
         }
