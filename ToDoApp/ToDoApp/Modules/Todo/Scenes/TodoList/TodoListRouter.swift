@@ -28,7 +28,11 @@ class TodoListRouter: NSObject, TodoListRoutingLogic, TodoListDataPassing {
         
         // Create and configure the TodoDetailViewController
         let todoDetailVC = TodoDetailViewController()
-        todoDetailVC.configure(with: todo)
+        
+        // Set up todo in the dataStore of the detailVC
+        if var destinationDS = todoDetailVC.router?.dataStore {
+            destinationDS.todo = todo
+        }
         
         // Present the detail view controller
         viewController?.navigationController?.pushViewController(todoDetailVC, animated: true)

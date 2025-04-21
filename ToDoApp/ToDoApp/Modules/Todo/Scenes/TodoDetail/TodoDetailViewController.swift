@@ -7,10 +7,21 @@
 
 import UIKit
 
-class TodoDetailViewController: UIViewController {
+protocol TodoDetailDisplayLogic: AnyObject {
+    func displayTodoDetail(viewModel: TodoDetail.FetchTodoDetail.ViewModel)
+    func displayToggledTodoStatus(viewModel: TodoDetail.ToggleTodoStatus.ViewModel)
+    func displayDeletedTodo(viewModel: TodoDetail.DeleteTodo.ViewModel)
+}
+
+class TodoDetailViewController: UIViewController, TodoDetailDisplayLogic {
+    
+    // MARK: - Clean Swift
+    var interactor: TodoDetailBusinessLogic?
+    var router: (NSObjectProtocol & TodoDetailRoutingLogic & TodoDetailDataPassing)?
     
     // MARK: - Properties
-    private var todo: Todo?
+    private var todoId: String?
+    private var viewModel: TodoDetail.FetchTodoDetail.ViewModel?
     
     // MARK: - UI Components
     private let backgroundView = GradientBackgroundView()
@@ -200,11 +211,37 @@ class TodoDetailViewController: UIViewController {
         return button
     }()
     
+    // MARK: - Object Lifecycle
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        setup()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setup()
+    }
+    
+    // MARK: - Setup
+    private func setup() {
+        let viewController = self
+        let interactor = TodoDetailInteractor()
+        let presenter = TodoDetailPresenter()
+        let router = TodoDetailRouter()
+        
+        viewController.interactor = interactor
+        viewController.router = router
+        interactor.presenter = presenter
+        presenter.viewController = viewController
+        router.viewController = viewController
+        router.dataStore = interactor
+    }
+    
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        updateUI()
+        fetchTodoDetail()
     }
     
     // MARK: - UI Setup
@@ -336,122 +373,49 @@ class TodoDetailViewController: UIViewController {
     }
     
     // MARK: - Public Methods
+    
+    // ใช้สำหรับรับ todo id จากหน้าอื่น
     func configure(with todo: Todo) {
-        self.todo = todo
+        guard let router = router, var dataStore = router.dataStore else { return }
+        
+        dataStore.todo = todo
+        todoId = todo.id
+        
+        // ถ้า view ถูกโหลดแล้ว ให้ดึงข้อมูลใหม่
         if isViewLoaded {
-            updateUI()
+            fetchTodoDetail()
         }
     }
     
-    // MARK: - Private Methods
-    private func updateUI() {
-        guard let todo = todo else { return }
+    // MARK: - Business Logic
+    
+    private func fetchTodoDetail() {
+        guard let todoId = todoId ?? router?.dataStore?.todo?.id else { return }
         
-        titleLabel.text = todo.title
-        categoryLabel.text = todo.category.rawValue
-        descriptionTextView.text = todo.description
-        
-        // Set category color
-        switch todo.category {
-        case .work:
-            categoryView.backgroundColor = UIColor.systemBlue
-        case .personal:
-            categoryView.backgroundColor = UIColor.systemPurple
-        case .shopping:
-            categoryView.backgroundColor = UIColor.systemGreen
-        case .health:
-            categoryView.backgroundColor = UIColor.systemRed
-        case .education:
-            categoryView.backgroundColor = UIColor.systemOrange
-        case .finance:
-            categoryView.backgroundColor = UIColor.systemTeal
-        case .other:
-            categoryView.backgroundColor = UIColor.systemGray
-        }
-        
-        // Set completion status
-        statusLabel.text = todo.isCompleted ? "Completed" : "Not Completed"
-        statusLabel.textColor = todo.isCompleted ? .systemGreen : .systemBlue
-        statusCheckmarkImageView.image = todo.isCompleted ? UIImage(systemName: "checkmark.circle.fill") : UIImage(systemName: "circle")
-        
-        // Set button title
-        markCompletedButton.setTitle(todo.isCompleted ? "Mark as Not Completed" : "Mark as Completed", for: .normal)
-        
-        // Format dates
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .short
-        
-        createdDateLabel.text = dateFormatter.string(from: todo.createdAt)
-        updatedDateLabel.text = dateFormatter.string(from: todo.updatedAt)
-        
-        if let dueDate = todo.dueDate {
-            dueDateLabel.text = dateFormatter.string(from: dueDate)
-        } else {
-            dueDateLabel.text = "No deadline"
-        }
+        let request = TodoDetail.FetchTodoDetail.Request(id: todoId)
+        interactor?.fetchTodoDetail(request: request)
     }
     
     // MARK: - Actions
+    
     @objc private func toggleCompletionStatus() {
-        guard let todo = todo else { return }
+        guard let viewModel = viewModel else { return }
         
-        // Create a loading indicator
-        let activityIndicator = UIActivityIndicatorView(style: .medium)
-        activityIndicator.startAnimating()
-        activityIndicator.color = .white
-        markCompletedButton.setTitle("", for: .normal)
-        markCompletedButton.addSubview(activityIndicator)
-        activityIndicator.center = markCompletedButton.center
-        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            activityIndicator.centerXAnchor.constraint(equalTo: markCompletedButton.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: markCompletedButton.centerYAnchor)
-        ])
+        // แสดง loading indicator
+        showLoadingIndicator(on: markCompletedButton)
         
-        // Call API to toggle completion status
-        let apiClient = APIClient.shared
-        let endpoint = TodoEndpoint.updateTodo(
-            id: todo.id,
-            title: todo.title,
-            description: todo.description,
-            category: todo.category.rawValue,
-            dueDate: todo.dueDate,
-            isCompleted: !todo.isCompleted
+        // สร้าง request ในรูปแบบที่ interactor เข้าใจ
+        let request = TodoDetail.ToggleTodoStatus.Request(
+            id: viewModel.id,
+            isCompleted: !viewModel.isCompleted
         )
         
-        apiClient.request(endpoint: endpoint) { [weak self] (result: Result<TodoResponse, APIError>) in
-            // Ensure UI updates are on the main thread
-            DispatchQueue.main.async {
-                // Remove activity indicator
-                activityIndicator.removeFromSuperview()
-                
-                guard let self = self else { return }
-                
-                switch result {
-                case .success(let response):
-                    // Update the local todo
-                    self.todo = Todo(from: response)
-                    self.updateUI()
-                    
-                    // Show success toast
-                    self.showToast(message: "Status updated successfully")
-                    
-                    // Post notification for todo list to refresh
-                    NotificationCenter.default.post(name: NSNotification.Name("TodoCreated"), object: nil)
-                    
-                case .failure(let error):
-                    // Show error toast
-                    self.showToast(message: "Failed to update: \(error.localizedDescription)")
-                    // Reset button state
-                    self.markCompletedButton.setTitle(todo.isCompleted ? "Mark as Not Completed" : "Mark as Completed", for: .normal)
-                }
-            }
-        }
+        // เรียกใช้ interactor เพื่อ toggle status
+        interactor?.toggleTodoStatus(request: request)
     }
     
     @objc private func deleteTodoTapped() {
-        guard let todo = todo else { return }
+        guard let viewModel = viewModel else { return }
         
         let alertController = UIAlertController(
             title: "Delete Todo",
@@ -464,51 +428,121 @@ class TodoDetailViewController: UIViewController {
         alertController.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
             guard let self = self else { return }
             
-            // Show loading
-            let activityIndicator = UIActivityIndicatorView(style: .medium)
-            activityIndicator.startAnimating()
-            activityIndicator.color = .white
-            self.deleteButton.setTitle("", for: .normal)
-            self.deleteButton.addSubview(activityIndicator)
-            activityIndicator.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                activityIndicator.centerXAnchor.constraint(equalTo: self.deleteButton.centerXAnchor),
-                activityIndicator.centerYAnchor.constraint(equalTo: self.deleteButton.centerYAnchor)
-            ])
+            // แสดง loading indicator
+            self.showLoadingIndicator(on: self.deleteButton)
             
-            // Call API to delete
-            let apiClient = APIClient.shared
-            let endpoint = TodoEndpoint.deleteTodo(id: todo.id)
-            
-            apiClient.request(endpoint: endpoint) { [weak self] (result: Result<MessageResponse, APIError>) in
-                DispatchQueue.main.async {
-                    activityIndicator.removeFromSuperview()
-                    
-                    guard let self = self else { return }
-                    
-                    switch result {
-                    case .success(_):
-                        // Show success toast
-                        self.showToast(message: "Todo deleted successfully")
-                        
-                        // Post notification for todo list to refresh
-                        NotificationCenter.default.post(name: NSNotification.Name("TodoCreated"), object: nil)
-                        
-                        // Go back to the list
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            self.navigationController?.popViewController(animated: true)
-                        }
-                        
-                    case .failure(let error):
-                        // Show error toast
-                        self.showToast(message: "Failed to delete: \(error.localizedDescription)")
-                        self.deleteButton.setTitle("Delete", for: .normal)
-                    }
-                }
-            }
+            // สร้าง request และเรียกใช้ interactor
+            let request = TodoDetail.DeleteTodo.Request(id: viewModel.id)
+            self.interactor?.deleteTodo(request: request)
         })
         
         present(alertController, animated: true)
+    }
+    
+    // MARK: - Display Logic
+    
+    func displayTodoDetail(viewModel: TodoDetail.FetchTodoDetail.ViewModel) {
+        self.viewModel = viewModel
+        
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            // อัพเดต UI ด้วยข้อมูลจาก viewModel
+            self.titleLabel.text = viewModel.title
+            self.categoryLabel.text = viewModel.category
+            self.descriptionTextView.text = viewModel.description
+            
+            // กำหนดสีให้ category
+            self.categoryView.backgroundColor = viewModel.categoryColor
+            
+            // กำหนดสถานะ
+            self.statusLabel.text = viewModel.isCompleted ? "Completed" : "Not Completed"
+            self.statusLabel.textColor = viewModel.isCompleted ? .systemGreen : .systemBlue
+            self.statusCheckmarkImageView.image = viewModel.isCompleted ? 
+                UIImage(systemName: "checkmark.circle.fill") : 
+                UIImage(systemName: "circle")
+            
+            // กำหนดข้อความบน button
+            self.markCompletedButton.setTitle(viewModel.statusButtonTitle, for: .normal)
+            
+            // กำหนดวันที่
+            self.createdDateLabel.text = viewModel.createdAt
+            self.updatedDateLabel.text = viewModel.updatedAt
+            
+            if let dueDate = viewModel.dueDate {
+                self.dueDateLabel.text = dueDate
+            } else {
+                self.dueDateLabel.text = "No deadline"
+            }
+        }
+    }
+    
+    func displayToggledTodoStatus(viewModel: TodoDetail.ToggleTodoStatus.ViewModel) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            // ลบ loading indicator
+            self.removeLoadingIndicator(from: self.markCompletedButton)
+            
+            // แสดง toast message
+            self.showToast(message: viewModel.message)
+            
+            // ถ้าสำเร็จ ให้ refresh ข้อมูล
+            if viewModel.success {
+                self.fetchTodoDetail()
+            }
+        }
+    }
+    
+    func displayDeletedTodo(viewModel: TodoDetail.DeleteTodo.ViewModel) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            // ลบ loading indicator
+            self.removeLoadingIndicator(from: self.deleteButton)
+            
+            // แสดง toast message
+            self.showToast(message: viewModel.message)
+            
+            // ถ้าสำเร็จ ให้นำทางกลับ
+            if viewModel.success {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.router?.routeBackToList()
+                }
+            }
+        }
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func showLoadingIndicator(on button: UIButton) {
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
+        activityIndicator.startAnimating()
+        activityIndicator.color = .white
+        activityIndicator.tag = 999 // ใช้ tag เพื่อระบุ indicator
+        
+        button.setTitle("", for: .normal)
+        button.addSubview(activityIndicator)
+        
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: button.centerYAnchor)
+        ])
+    }
+    
+    private func removeLoadingIndicator(from button: UIButton) {
+        if let indicator = button.viewWithTag(999) as? UIActivityIndicatorView {
+            indicator.stopAnimating()
+            indicator.removeFromSuperview()
+            
+            // คืนค่าข้อความปุ่มเดิม
+            if button == markCompletedButton {
+                button.setTitle(viewModel?.statusButtonTitle, for: .normal)
+            } else if button == deleteButton {
+                button.setTitle("Delete", for: .normal)
+            }
+        }
     }
     
     private func showToast(message: String) {
