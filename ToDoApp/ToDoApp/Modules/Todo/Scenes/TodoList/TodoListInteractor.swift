@@ -28,7 +28,7 @@ class TodoListInteractor: TodoListBusinessLogic, TodoListDataStore {
     }
     
     func fetchTodos(request: TodoList.FetchTodos.Request) {
-        worker.fetchTodos { [weak self] result in
+        worker.fetchTodos(ignoreCache: request.ignoreCache) { [weak self] result in
             guard let self = self else { return }
             
             switch result {

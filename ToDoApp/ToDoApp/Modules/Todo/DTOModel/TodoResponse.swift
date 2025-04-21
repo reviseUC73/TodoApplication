@@ -22,7 +22,7 @@ struct TodoResponse: Codable {
     let title: String
     let description: String
     let category: String
-    let dueDate: Date?
+    var dueDate: Date?
     let isCompleted: Bool
     let createdAt: Date
     let updatedAt: Date
@@ -38,6 +38,9 @@ struct TodoResponse: Codable {
         case updatedAt = "updated_at"
     }
     
+    // ไม่จำเป็นต้องมี custom initializer อีกต่อไป เพราะใช้ JSONDecoder strategy จาก APIClient
+    // หากมีการ debug ขอให้เก็บไว้เป็น comment เพื่อให้เห็นวิธีการทำงานเดิม
+    /*
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .id)
@@ -46,10 +49,23 @@ struct TodoResponse: Codable {
         category = try container.decode(String.self, forKey: .category)
         isCompleted = try container.decode(Bool.self, forKey: .isCompleted)
         
+        // Configure date formatter with proper formatting options
         let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         
         if let dueDateString = try container.decodeIfPresent(String.self, forKey: .dueDate) {
             dueDate = dateFormatter.date(from: dueDateString)
+            
+            // Fallback if the primary formatter fails
+            if dueDate == nil {
+                let fallbackFormatter = ISO8601DateFormatter()
+                dueDate = fallbackFormatter.date(from: dueDateString)
+                
+                // Print debug info if both formatters fail
+                if dueDate == nil {
+                    print("Failed to parse due date: \(dueDateString)")
+                }
+            }
         } else {
             dueDate = nil
         }
@@ -59,6 +75,7 @@ struct TodoResponse: Codable {
         let updatedAtString = try container.decode(String.self, forKey: .updatedAt)
         updatedAt = dateFormatter.date(from: updatedAtString) ?? Date()
     }
+    */
 }
 
 // For response when fetching all todos

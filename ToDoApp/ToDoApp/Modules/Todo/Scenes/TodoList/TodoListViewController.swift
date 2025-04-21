@@ -322,12 +322,31 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
     }
     
     @objc private func refreshButtonTapped() {
-        fetchTodos()
+        // แสดง loading indicator
+        let loadingIndicator = UIActivityIndicatorView(style: .medium)
+        loadingIndicator.startAnimating()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingIndicator)
+        
+        // เรียกใช้ fetchTodos พร้อมกับ ignoreCache=true
+        fetchTodos(ignoreCache: true)
+        
+        // คืนค่าปุ่มเดิมหลังจากเวลาผ่านไป 1 วินาที
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            
+            let refreshButton = UIBarButtonItem(
+                barButtonSystemItem: .refresh,
+                target: self,
+                action: #selector(self.refreshButtonTapped)
+            )
+            refreshButton.tintColor = .darkGray
+            self.navigationItem.rightBarButtonItem = refreshButton
+        }
     }
     
     // MARK: - Business Logic
-    private func fetchTodos() {
-        let request = TodoList.FetchTodos.Request()
+    private func fetchTodos(ignoreCache: Bool = false) {
+        let request = TodoList.FetchTodos.Request(ignoreCache: ignoreCache)
         interactor?.fetchTodos(request: request)
     }
     

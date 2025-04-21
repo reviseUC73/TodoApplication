@@ -12,7 +12,13 @@ enum TodoList {
     // MARK: - Use cases
     
     enum FetchTodos {
-        struct Request {}
+        struct Request {
+            let ignoreCache: Bool
+            
+            init(ignoreCache: Bool = false) {
+                self.ignoreCache = ignoreCache
+            }
+        }
         
         struct Response {
             var todos: [Todo]
