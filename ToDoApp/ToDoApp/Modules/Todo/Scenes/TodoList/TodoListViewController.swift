@@ -206,11 +206,25 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
         super.viewDidLoad()
         setupUI()
         fetchTodos()
+        
+        // เพิ่ม observer สำหรับ TodoCreated notification
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(todoCreated),
+            name: NSNotification.Name("TodoCreated"),
+            object: nil
+        )
+    }
+    
+    deinit {
+        // ลบ observer เมื่อ view controller ถูกทำลาย
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchTodos() // Refresh todos when view appears
+        // บังคับให้โหลดข้อมูลใหม่ทุกครั้งเมื่อกลับมาที่หน้านี้ เพื่อแสดงข้อมูลล่าสุด
+        fetchTodos(ignoreCache: true)
     }
     
     // MARK: - UI Setup
@@ -423,6 +437,35 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
             }, completion: { _ in
                 toastLabel.removeFromSuperview()
             })
+        }
+    }
+    
+    // MARK: - Notification Handlers
+    @objc private func todoCreated() {
+        // ทำให้แน่ใจว่าการอัปเดต UI ทำงานบน main thread เท่านั้น
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            // แสดง loading indicator
+            let loadingIndicator = UIActivityIndicatorView(style: .medium)
+            loadingIndicator.startAnimating()
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingIndicator)
+            
+            // โหลดข้อมูลใหม่โดยบังคับไม่ใช้ cache
+            self.fetchTodos(ignoreCache: true)
+            
+            // คืนค่าปุ่มเดิมหลังจากเวลาผ่านไป 1 วินาที
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+                guard let self = self else { return }
+                
+                let refreshButton = UIBarButtonItem(
+                    barButtonSystemItem: .refresh,
+                    target: self,
+                    action: #selector(self.refreshButtonTapped)
+                )
+                refreshButton.tintColor = .darkGray
+                self.navigationItem.rightBarButtonItem = refreshButton
+            }
         }
     }
 }

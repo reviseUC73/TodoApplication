@@ -427,6 +427,11 @@ class AddTodoViewController: UIViewController, AddTodoDisplayLogic {
     
     func displayCreatedTodo(viewModel: AddTodo.Create.ViewModel) {
         if viewModel.success {
+            // แจ้งเตือนว่ามีการสร้าง Todo ใหม่ก่อนจะปิดหน้าจอ
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: NSNotification.Name("TodoCreated"), object: nil)
+            }
+            
             // Route back to the todo list
             router?.routeToTodoList()
         } else if let errorMessage = viewModel.errorMessage {

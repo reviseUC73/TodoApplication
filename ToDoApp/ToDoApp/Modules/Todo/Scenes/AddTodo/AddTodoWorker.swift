@@ -27,9 +27,17 @@ class AddTodoWorker: AddTodoWorkerProtocol {
             dueDate: dueDate
         )
         
-        apiClient.request(endpoint: endpoint) { (result: Result<TodoResponse, APIError>) in
+        apiClient.request(endpoint: endpoint) { [weak self] (result: Result<TodoResponse, APIError>) in
             switch result {
             case .success(_):
+                // ล้าง cache หลังจากสร้าง todo ใหม่
+                self?.apiClient.clearCache()
+                
+                // ส่ง notification ว่ามีการสร้าง todo ใหม่ บน main thread
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: NSNotification.Name("TodoCreated"), object: nil)
+                }
+                
                 // Successfully created the todo
                 completion(.success(true))
                 

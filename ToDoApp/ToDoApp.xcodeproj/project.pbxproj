@@ -55,6 +55,7 @@
 		42AF375C2DB44D8900527139 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF375B2DB44D8900527139 /* TokenManager.swift */; };
 		42AF37652DB58E5B00527139 /* MessageResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37642DB58E5B00527139 /* MessageResponse.swift */; };
 		42AF37672DB58F4200527139 /* ErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37662DB58F4200527139 /* ErrorResponse.swift */; };
+		42AF376A2DB5CBCD00527139 /* NotificationConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AF37692DB5CBCD00527139 /* NotificationConstants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -127,6 +128,7 @@
 		42AF375B2DB44D8900527139 /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 		42AF37642DB58E5B00527139 /* MessageResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageResponse.swift; sourceTree = "<group>"; };
 		42AF37662DB58F4200527139 /* ErrorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorResponse.swift; sourceTree = "<group>"; };
+		42AF37692DB5CBCD00527139 /* NotificationConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationConstants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -208,6 +210,7 @@
 		42885EB02DB27454009EFAA4 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				42AF37682DB5CB9F00527139 /* Utilities */,
 				42AF37632DB58E2D00527139 /* DTOModel */,
 				42AF37062DB2D46400527139 /* Manager */,
 				42885EAF2DB27454009EFAA4 /* Network */,
@@ -385,6 +388,14 @@
 				42AF37662DB58F4200527139 /* ErrorResponse.swift */,
 			);
 			path = DTOModel;
+			sourceTree = "<group>";
+		};
+		42AF37682DB5CB9F00527139 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				42AF37692DB5CBCD00527139 /* NotificationConstants.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -565,6 +576,7 @@
 				42AF37082DB2D48300527139 /* AppRouter.swift in Sources */,
 				42AF37422DB3ED9500527139 /* DateCarouselView.swift in Sources */,
 				42AF374E2DB4321700527139 /* RegisterInteractor.swift in Sources */,
+				42AF376A2DB5CBCD00527139 /* NotificationConstants.swift in Sources */,
 				42AF372C2DB304AF00527139 /* AddTodoViewController.swift in Sources */,
 				42AF37182DB2D95400527139 /* TodoListRouter.swift in Sources */,
 				42885EBB2DB27454009EFAA4 /* APIClient.swift in Sources */,
