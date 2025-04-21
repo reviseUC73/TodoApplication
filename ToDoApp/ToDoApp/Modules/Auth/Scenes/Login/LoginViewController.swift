@@ -180,23 +180,26 @@ class LoginViewController: UIViewController, LoginDisplayLogic {
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
         
-        // Set demo credentials hint
-        let hintLabel = UILabel()
-        hintLabel.text = "Demo: username 'user', password 'password'"
-        hintLabel.font = .systemFont(ofSize: 12)
-        hintLabel.textColor = .secondaryLabel
-        hintLabel.textAlignment = .center
-        hintLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(hintLabel)
+//        // Set demo credentials hint
+//        let hintLabel = UILabel()
+//        hintLabel.text = "Demo: username 'user', password 'password'"
+//        hintLabel.font = .systemFont(ofSize: 12)
+//        hintLabel.textColor = .secondaryLabel
+//        hintLabel.textAlignment = .center
+//        hintLabel.translatesAutoresizingMaskIntoConstraints = false
+//        
+//        view.addSubview(hintLabel)
         view.addSubview(registerButton)
-        
+//        
         NSLayoutConstraint.activate([
-            hintLabel.topAnchor.constraint(equalTo: errorLabel.bottomAnchor, constant: 16),
-            hintLabel.leadingAnchor.constraint(equalTo: usernameTextField.leadingAnchor),
-            hintLabel.trailingAnchor.constraint(equalTo: usernameTextField.trailingAnchor),
+//            hintLabel.topAnchor.constraint(equalTo: errorLabel.bottomAnchor, constant: 16),
+//            hintLabel.leadingAnchor.constraint(equalTo: usernameTextField.leadingAnchor),
+//            hintLabel.trailingAnchor.constraint(equalTo: usernameTextField.trailingAnchor),
+
+//            registerButton.topAnchor.constraint(equalTo: hintLabel.bottomAnchor, constant: 24),
+//            registerButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
             
-            registerButton.topAnchor.constraint(equalTo: hintLabel.bottomAnchor, constant: 24),
+            registerButton.topAnchor.constraint(equalTo: errorLabel.bottomAnchor, constant: 16),
             registerButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }

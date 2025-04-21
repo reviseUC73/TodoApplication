@@ -65,7 +65,7 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-
+    
     private lazy var todoStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -145,6 +145,60 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
         label.textAlignment = .center
         return label
     }
+    
+
+    
+
+    private func makeBarButton(
+        systemItem: UIBarButtonItem.SystemItem,
+        tintColor: UIColor,
+        action: Selector
+    ) -> UIBarButtonItem {
+        let button = UIBarButtonItem(
+            barButtonSystemItem: systemItem,
+            target: self,
+            action: action
+        )
+        button.tintColor = tintColor
+        return button
+    }
+    
+    private lazy var makeRefreshButton: UIBarButtonItem = {
+        let button = makeBarButton(
+            systemItem: .refresh,
+            tintColor: .darkGray,
+            action: #selector(refreshButtonTapped)
+        )
+        return button
+    }()
+    
+    private lazy var logoutButtonItem: UIBarButtonItem = {
+        // สร้าง config ให้ Monochrome + กำหนดขนาดใหญ่ขึ้น
+        let symbolConfig = UIImage.SymbolConfiguration(
+            pointSize: 20,      // ปรับขนาดตรงนี้
+            weight: .light,
+            scale: .large
+        ).applying(UIImage.SymbolConfiguration.preferringMonochrome())
+        
+        // โหลด SF Symbol พร้อม config
+        let raw = UIImage(
+            systemName: "arrow.backward.square",
+            withConfiguration: symbolConfig
+        )
+        // ทาสีให้เป็น darkGray
+        let image = raw?.withTintColor(.darkGray, renderingMode: .alwaysOriginal)
+        
+        let btn = UIBarButtonItem(
+            image: image,
+            style: .plain,
+            target: self,
+            action: #selector(logoutButtonTapped)
+        )
+        return btn
+    }()
+
+    
+
     
     // MARK: - Properties
     private var displayedTodos: [TodoList.FetchTodos.ViewModel.DisplayedTodo] = []
@@ -326,13 +380,35 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
             action: #selector(refreshButtonTapped)
         )
         refreshButton.tintColor = .darkGray
-        navigationItem.rightBarButtonItem = refreshButton
+        navigationItem.rightBarButtonItem = makeRefreshButton
+        navigationItem.leftBarButtonItem = logoutButtonItem
     }
     
     
     // MARK: - Actions
     @objc private func addButtonTapped() {
         router?.routeToAddTodo()
+    }
+    
+    @objc private func logoutButtonTapped() {
+        // แสดง alert เพื่อยืนยันการออกจากระบบ
+        let alertController = UIAlertController(
+            title: "ออกจากระบบ",
+            message: "คุณต้องการออกจากระบบใช่หรือไม่?",
+            preferredStyle: .alert
+        )
+        
+        alertController.addAction(UIAlertAction(title: "ยกเลิก", style: .cancel))
+        
+        alertController.addAction(UIAlertAction(title: "ออกจากระบบ", style: .destructive) { [weak self] _ in
+            // ล้าง token และข้อมูลการเข้าสู่ระบบ
+            TokenManager.shared.clearTokens()
+            
+            // นำผู้ใช้ไปยังหน้า Login
+            AppRouter.shared.navigateToLogin()
+        })
+        
+        present(alertController, animated: true)
     }
     
     @objc private func refreshButtonTapped() {

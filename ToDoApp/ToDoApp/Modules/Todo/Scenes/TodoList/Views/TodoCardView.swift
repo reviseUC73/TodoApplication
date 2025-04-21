@@ -153,7 +153,7 @@ class TodoCardView: UIView {
             
             titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 16),
             titleLabel.leadingAnchor.constraint(equalTo: statusIndicator.trailingAnchor, constant: 16),
-//            titleLabel.trailingAnchor.constraint(equalTo: categoryContainer.leadingAnchor, constant: -8),
+            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: categoryContainer.leadingAnchor, constant: -16),
             
             descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
             descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
