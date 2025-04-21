@@ -8,8 +8,8 @@ A comprehensive todo list application built with Clean Swift architecture, helpi
 |---------------|--------|------|
 | Login         |    ![image](https://github.com/user-attachments/assets/07ea6fa2-fb08-41c4-8159-e8a7bb179637) |    ![image](https://github.com/user-attachments/assets/8fa9db3b-089b-45af-990b-7caf95888331)|
 | Register      |      ![image](https://github.com/user-attachments/assets/475e2821-8d24-4bc4-afc9-1e146f24f8f5) |  ![image](https://github.com/user-attachments/assets/95323561-eb69-4e68-9d0b-f4228a44b457) |
-| Todo List     |     ![image](https://github.com/user-attachments/assets/9f8baa3f-17c8-487c-94a3-4ed2e9bb2fd2)| |![image](https://github.com/user-attachments/assets/7afb493f-a875-4185-b203-d516810450a1)
-| Todo Detail   |  ![image](https://github.com/user-attachments/assets/4ae650ce-ef2e-4522-9f79-e9be9846336d)|      |![image](https://github.com/user-attachments/assets/74dd64d7-6642-4d39-87d9-41e064749d87)
+| Todo List     |     ![image](https://github.com/user-attachments/assets/9f8baa3f-17c8-487c-94a3-4ed2e9bb2fd2)|![image](https://github.com/user-attachments/assets/7afb493f-a875-4185-b203-d516810450a1)|
+| Todo Detail   |  ![image](https://github.com/user-attachments/assets/4ae650ce-ef2e-4522-9f79-e9be9846336d)| ![image](https://github.com/user-attachments/assets/74dd64d7-6642-4d39-87d9-41e064749d87)|
 
 ## Features
 
