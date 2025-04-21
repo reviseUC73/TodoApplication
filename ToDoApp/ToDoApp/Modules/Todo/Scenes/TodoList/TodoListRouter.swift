@@ -23,7 +23,15 @@ class TodoListRouter: NSObject, TodoListRoutingLogic, TodoListDataPassing {
     // MARK: - Routing
     
     func routeToTodoDetail(id: String) {
-        // Implement navigation to Todo detail screen if needed
+        // Find the todo with the given ID
+        guard let todo = dataStore?.todos.first(where: { $0.id == id }) else { return }
+        
+        // Create and configure the TodoDetailViewController
+        let todoDetailVC = TodoDetailViewController()
+        todoDetailVC.configure(with: todo)
+        
+        // Present the detail view controller
+        viewController?.navigationController?.pushViewController(todoDetailVC, animated: true)
     }
     
     func routeToAddTodo() {

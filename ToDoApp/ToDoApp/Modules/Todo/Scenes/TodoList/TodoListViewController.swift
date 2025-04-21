@@ -626,6 +626,12 @@ extension TodoListViewController: SwipeableTodoCardViewDelegate {
         let request = TodoList.DeleteTodo.Request(id: id)
         interactor?.deleteTodo(request: request)
     }
+    
+    func swipeableTodoCardViewDidTap(_ cardView: SwipeableTodoCardView, forTodoWithId id: String) {
+        // Navigate to todo detail
+        print("นำทางไปยัง TodoDetail สำหรับ ID: \(id)")
+        router?.routeToTodoDetail(id: id)
+    }
 }
 
 //// MARK: - TodoCardViewDelegate

@@ -10,6 +10,7 @@ import UIKit
 protocol TodoCardViewDelegate: AnyObject {
     func todoCardView(_ cardView: TodoCardView, didToggleCompletionStatus isCompleted: Bool, forTodoWithId id: String)
     func todoCardViewDidLongPress(_ cardView: TodoCardView, forTodoWithId id: String)
+    func todoCardViewDidTap(_ cardView: TodoCardView, forTodoWithId id: String)
 }
 
 class TodoCardView: UIView {
@@ -183,7 +184,12 @@ class TodoCardView: UIView {
             categoryLabel.trailingAnchor.constraint(equalTo: categoryContainer.trailingAnchor, constant: -8),
         ])
         
-        // Add tap gesture to toggle completion status
+        // Add tap gesture เฉพาะสำหรับ statusIndicator เพื่อ toggle
+        let statusTapGesture = UITapGestureRecognizer(target: self, action: #selector(statusTapped))
+        statusIndicator.addGestureRecognizer(statusTapGesture)
+        statusIndicator.isUserInteractionEnabled = true
+        
+        // Add tap gesture to card (ไม่ได้ใช้สำหรับ toggle อีกต่อไป แต่จะถูกส่งขึ้นไปให้ SwipeableTodoCardView)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cardTapped))
         containerView.addGestureRecognizer(tapGesture)
         containerView.isUserInteractionEnabled = true
@@ -196,8 +202,15 @@ class TodoCardView: UIView {
     
     // MARK: - Actions
     
-    @objc private func cardTapped() {
+    @objc private func statusTapped() {
+        // เรียกใช้ delegate เพื่อ toggle status
         delegate?.todoCardView(self, didToggleCompletionStatus: isCompleted, forTodoWithId: todoId)
+    }
+    
+    @objc private func cardTapped() {
+        // จะไม่ใช้สำหรับ toggle status อีกต่อไป แต่จะเป็นการนำทางไปหน้า detail
+        // delegate จะจัดการต่อบน SwipeableTodoCardView
+        delegate?.todoCardViewDidTap(self, forTodoWithId: todoId)
     }
     
     @objc private func cardLongPressed(_ gesture: UILongPressGestureRecognizer) {
@@ -231,7 +244,8 @@ class TodoCardView: UIView {
         // Apply styling based on completion status
         if todo.isCompleted {
             statusIndicator.backgroundColor = .systemGreen
-            statusIcon.image = UIImage(systemName: "checkmark")
+//            statusIcon.image = UIImage(systemName: "checkmark")
+            statusIcon.image = UIImage(systemName: "checkmark.square.fill")
             
 //           // Apply strikethrough to title if completed
 //            let attributedString = NSAttributedString(
@@ -240,8 +254,13 @@ class TodoCardView: UIView {
 //            )
 //            titleLabel.attributedText = attributedString
         } else {
-            statusIndicator.backgroundColor = .systemBlue
-            statusIcon.image = nil
+//            statusIndicator.backgroundColor = .systemBlue
+//            statusIcon.image = nil
+            statusIndicator.backgroundColor = .systemBackground
+            statusIndicator.layer.borderColor = UIColor.systemBlue.cgColor
+            statusIndicator.layer.borderWidth = 2
+            statusIcon.image = UIImage(systemName: "square")
+            statusIcon.tintColor = .systemBlue
             
             // Normal title for incomplete todos
 //            titleLabel.attributedText = nil

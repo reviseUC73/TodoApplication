@@ -11,6 +11,7 @@ protocol SwipeableTodoCardViewDelegate: AnyObject {
     func swipeableTodoCardView(_ cardView: SwipeableTodoCardView, didSwipeToDeleteTodoWithId id: String)
     func swipeableTodoCardView(_ cardView: SwipeableTodoCardView, didToggleCompletionStatus isCompleted: Bool, forTodoWithId id: String)
     func swipeableTodoCardViewDidLongPress(_ cardView: SwipeableTodoCardView, forTodoWithId id: String)
+    func swipeableTodoCardViewDidTap(_ cardView: SwipeableTodoCardView, forTodoWithId id: String)
 }
 
 class SwipeableTodoCardView: UIView {
@@ -189,7 +190,8 @@ class SwipeableTodoCardView: UIView {
     }
     
     @objc private func cardTapped() {
-        delegate?.swipeableTodoCardView(self, didToggleCompletionStatus: isCompleted, forTodoWithId: todoId)
+        // Route to detail view instead of toggling completion
+        delegate?.swipeableTodoCardViewDidTap(self, forTodoWithId: todoId)
     }
     
     @objc private func cardLongPressed(_ gesture: UILongPressGestureRecognizer) {
@@ -221,5 +223,9 @@ extension SwipeableTodoCardView: TodoCardViewDelegate {
     
     func todoCardViewDidLongPress(_ cardView: TodoCardView, forTodoWithId id: String) {
         delegate?.swipeableTodoCardViewDidLongPress(self, forTodoWithId: id)
+    }
+    
+    func todoCardViewDidTap(_ cardView: TodoCardView, forTodoWithId id: String) {
+        delegate?.swipeableTodoCardViewDidTap(self, forTodoWithId: id)
     }
 }
