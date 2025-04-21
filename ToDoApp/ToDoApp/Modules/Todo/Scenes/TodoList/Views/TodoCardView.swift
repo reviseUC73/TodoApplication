@@ -31,7 +31,8 @@ class TodoCardView: UIView {
     private let statusIndicator: UIView = {
         let view = UIView()
         view.backgroundColor = .systemBlue
-        view.layer.cornerRadius = 12
+        view.layer.cornerRadius = 12  // Will make it 24/2 = 12 for perfect circle
+        view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -149,8 +150,8 @@ class TodoCardView: UIView {
             
             statusIcon.centerXAnchor.constraint(equalTo: statusIndicator.centerXAnchor),
             statusIcon.centerYAnchor.constraint(equalTo: statusIndicator.centerYAnchor),
-            statusIcon.widthAnchor.constraint(equalToConstant: 14),
-            statusIcon.heightAnchor.constraint(equalToConstant: 14),
+            statusIcon.widthAnchor.constraint(equalToConstant: 18),
+            statusIcon.heightAnchor.constraint(equalToConstant: 18),
             
             titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 16),
             titleLabel.leadingAnchor.constraint(equalTo: statusIndicator.trailingAnchor, constant: 16),
@@ -244,28 +245,33 @@ class TodoCardView: UIView {
         // Apply styling based on completion status
         if todo.isCompleted {
             statusIndicator.backgroundColor = .systemGreen
-//            statusIcon.image = UIImage(systemName: "checkmark")
-            statusIcon.image = UIImage(systemName: "checkmark.square.fill")
+            statusIndicator.layer.borderWidth = 0
+
+            let symbolConfig = UIImage.SymbolConfiguration(
+                pointSize: 20,    // ขนาดเช็กมาร์ค
+                weight: .bold,    // ปรับน้ำหนักเป็น .bold หรือ .heavy
+                scale: .medium
+            )
+
+            statusIcon.image = UIImage(
+                systemName: "checkmark",
+                withConfiguration: symbolConfig
+            )?
+            .withTintColor(.white, renderingMode: .alwaysTemplate)
             
-//           // Apply strikethrough to title if completed
-//            let attributedString = NSAttributedString(
-//                string: todo.title,
-//                attributes: [NSAttributedString.Key.strikethroughStyle: NSUnderlineStyle.single.rawValue]
-//            )
-//            titleLabel.attributedText = attributedString
+            statusIcon.tintColor = .white
         } else {
-//            statusIndicator.backgroundColor = .systemBlue
-//            statusIcon.image = nil
             statusIndicator.backgroundColor = .systemBackground
             statusIndicator.layer.borderColor = UIColor.systemBlue.cgColor
-            statusIndicator.layer.borderWidth = 2
-            statusIcon.image = UIImage(systemName: "square")
-            statusIcon.tintColor = .systemBlue
-            
+            statusIndicator.layer.borderWidth = 4
+
+            statusIcon.image = UIImage(systemName: "circle")
+            statusIcon.tintColor = .white
+
             // Normal title for incomplete todos
-//            titleLabel.attributedText = nil
             titleLabel.text = todo.title
         }
+
         
         // Set category color based on category type
         switch todo.category {
