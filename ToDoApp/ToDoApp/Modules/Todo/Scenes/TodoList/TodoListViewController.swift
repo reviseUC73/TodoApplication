@@ -94,7 +94,7 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
         view.translatesAutoresizingMaskIntoConstraints = false
         
         let imageView = UIImageView(image: UIImage(systemName: "list.bullet.clipboard"))
-        imageView.tintColor = .white
+        imageView.tintColor = .systemIndigo
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -176,8 +176,8 @@ class TodoListViewController: UIViewController, TodoListDisplayLogic {
         // สร้าง config ให้ Monochrome + กำหนดขนาดใหญ่ขึ้น
         let symbolConfig = UIImage.SymbolConfiguration(
             pointSize: 20,      // ปรับขนาดตรงนี้
-            weight: .light,
-            scale: .large
+//            weight: .light,
+//            scale: .large
         ).applying(UIImage.SymbolConfiguration.preferringMonochrome())
         
         // โหลด SF Symbol พร้อม config
