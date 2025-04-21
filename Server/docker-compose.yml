@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  api:
+    build: .
+    container_name: todo-app-api
+    restart: always
+    ports:
+      - "5001:5001"
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/usr/src/app/logs
+    environment:
+      - NODE_ENV=production
+    command: npm start 

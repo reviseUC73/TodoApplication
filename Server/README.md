@@ -63,13 +63,18 @@ The application uses **MongoDB Atlas** as its database with the following collec
   - `created_at`: Date
   - `updated_at`: Date
 
-## API Endpoints
+## API Endpoints and Special Features
 
 ### Authentication
 
 #### Register User
 - **Endpoint**: `POST /auth/register`
 - **Description**: Create a new user account
+- **Special Features**:
+  - Password hashing for security
+  - Email format validation
+  - Username uniqueness check
+  - Auto-generation of JWT tokens
 - **Request Body**:
   ```json
   {
@@ -107,6 +112,10 @@ The application uses **MongoDB Atlas** as its database with the following collec
 #### Login
 - **Endpoint**: `POST /auth/login`
 - **Description**: Authenticate a user and get access token
+- **Special Features**:
+  - Secure password comparison
+  - Return both access and refresh tokens
+  - Configurable token expiration time
 - **Request Body**:
   ```json
   {
@@ -140,6 +149,10 @@ The application uses **MongoDB Atlas** as its database with the following collec
 #### Refresh Token
 - **Endpoint**: `POST /auth/refresh`
 - **Description**: Refresh access token using a refresh token
+- **Special Features**:
+  - Extended session management
+  - Token rotation for security
+  - Verification of token ownership
 - **Request Body**:
   ```json
   {
@@ -172,6 +185,9 @@ The application uses **MongoDB Atlas** as its database with the following collec
 #### Logout
 - **Endpoint**: `DELETE /auth/logout`
 - **Description**: Invalidate the current token
+- **Special Features**:
+  - Clean session termination
+  - Token invalidation for security
 - **Headers**:
   ```
   Authorization: Bearer {access_token}
@@ -188,6 +204,11 @@ The application uses **MongoDB Atlas** as its database with the following collec
 #### Get All Todos
 - **Endpoint**: `GET /todos`
 - **Description**: Retrieve all todos for the authenticated user
+- **Special Features**:
+  - Multi-parameter filtering (category, completion status, due date)
+  - Sorting by creation date
+  - User-specific data isolation
+  - Pagination metadata
 - **Headers**:
   ```
   Authorization: Bearer {access_token}
@@ -230,6 +251,11 @@ The application uses **MongoDB Atlas** as its database with the following collec
 #### Create Todo
 - **Endpoint**: `POST /todos`
 - **Description**: Create a new todo item
+- **Special Features**:
+  - Automatic user association
+  - Category validation against predefined list
+  - Auto timestamp generation (created_at, updated_at)
+  - Data sanitization and validation
 - **Headers**:
   ```
   Authorization: Bearer {access_token}
@@ -271,6 +297,9 @@ The application uses **MongoDB Atlas** as its database with the following collec
 #### Get Specific Todo
 - **Endpoint**: `GET /todos/:id`
 - **Description**: Get a specific todo by ID
+- **Special Features**:
+  - Owner verification (users can only access their own todos)
+  - Detailed error handling for missing items
 - **Headers**:
   ```
   Authorization: Bearer {access_token}
@@ -300,6 +329,11 @@ The application uses **MongoDB Atlas** as its database with the following collec
 #### Update Todo
 - **Endpoint**: `PUT /todos/:id`
 - **Description**: Update an existing todo
+- **Special Features**:
+  - Partial updates supported (only changed fields)
+  - Automatic update of 'updated_at' timestamp
+  - Data validation on update
+  - Owner verification for security
 - **Headers**:
   ```
   Authorization: Bearer {access_token}
@@ -340,6 +374,10 @@ The application uses **MongoDB Atlas** as its database with the following collec
 #### Delete Todo
 - **Endpoint**: `DELETE /todos/:id`
 - **Description**: Delete a todo item
+- **Special Features**:
+  - Soft delete support (configurable)
+  - Owner verification before deletion
+  - Detailed success/failure messages
 - **Headers**:
   ```
   Authorization: Bearer {access_token}
@@ -408,10 +446,69 @@ NODE_ENV=development
 
 ### Installation
 
-1. Clone the repository
+1. Clone the repository `https://github.com/reviseUC73/TodoApplication/` 
+2. Enter to server path `cd server`
 2. Install dependencies: `npm install`
 3. Create a `.env` file with the above environment variables
 4. Start the server: `npm start` or `npm run dev` for development
+
+## Deployment
+
+### Docker Deployment
+
+The application includes Docker configuration for easy deployment.
+
+#### Prerequisites
+- Docker and Docker Compose installed on your server
+- `.env` file configured with your environment variables
+
+#### Docker Files
+- `Dockerfile`: Configures the Node.js environment
+- `.dockerignore`: Excludes unnecessary files from the Docker image
+- `docker-compose.yml`: Defines the service configuration
+
+#### Deployment Steps
+
+1. **Build and run with Docker Compose**:
+   ```bash
+   docker-compose up -d
+   ```
+   
+   This will:
+   - Build the Docker image
+   - Start the container in detached mode
+   - Mount the logs directory as a volume
+   - Load environment variables from the .env file
+   - Expose port 5001
+
+2. **View logs**:
+   ```bash
+   docker logs todo-app-api
+   ```
+
+3. **Stop the service**:
+   ```bash
+   docker-compose down
+   ```
+
+#### Environment Variables in Docker
+
+The Docker setup automatically uses the `.env` file in the project root. To modify environment variables:
+
+1. Update your `.env` file
+2. Restart the container:
+   ```bash
+   docker-compose down
+   docker-compose up -d
+   ```
+
+#### Volume Mounts
+
+The Docker Compose configuration mounts the logs directory to persist logs between container restarts:
+```yaml
+volumes:
+  - ./logs:/usr/src/app/logs
+```
 
 ## Testing
 
